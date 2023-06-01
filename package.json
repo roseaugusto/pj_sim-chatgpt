@@ -12,6 +12,26 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "sim-chatgpt-sidebar",
+          "title": "Sim chatgpt sidebar",
+          "icon": "media/icons/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "sim-chatgpt-sidebar": [
+        {
+          "type": "webview",
+          "id": "sim-chatgpt-sidebar",
+          "name": "Sim chatgpt",
+          "icon": "media/icons/icon.svg",
+          "contextualTitle": "sidebar test"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "programming-language-translator.helloWorld",
@@ -28,16 +48,19 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.78.0",
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",
     "@types/node": "16.x",
+    "@types/vscode": "^1.78.0",
     "@typescript-eslint/eslint-plugin": "^5.59.1",
     "@typescript-eslint/parser": "^5.59.1",
+    "@vscode/test-electron": "^2.3.0",
     "eslint": "^8.39.0",
     "glob": "^8.1.0",
     "mocha": "^10.2.0",
-    "typescript": "^5.0.4",
-    "@vscode/test-electron": "^2.3.0"
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "openai": "^3.2.1"
   }
 }
