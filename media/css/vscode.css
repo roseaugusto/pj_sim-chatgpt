@@ -80,9 +80,13 @@ input:not([type='checkbox']),
   flex-direction: row;
 }
 
+.logo {
+  margin-right: 10px;
+}
+
 .card {
-  border-radius: 25px;
-  padding: 5px;
+  border-radius: 8px;
+  padding: 10px;
   display: block;
   height: auto;
   width: 100%;
@@ -90,10 +94,9 @@ input:not([type='checkbox']),
   resize: none;
   overflow: hidden;
   font-family: var(--vscode-font-family);
-  padding: var(--input-padding-vertical) var(--input-padding-horizontal);
-  color: var(--vscode-input-foreground);
+  color: #ccc;
   outline-color: var(--vscode-input-border);
-  background-color: var(--vscode-input-background);
+  background-color: #545454;
 }
 
 input::placeholder,
