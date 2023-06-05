@@ -1,14 +1,8 @@
 import * as vscode from 'vscode';
-import * as openai from 'openai';
-
 export class SidebarProvider implements vscode.WebviewViewProvider {
   _view?: vscode.WebviewView;
   _doc?: vscode.TextDocument;
-  _openai = new openai.OpenAIApi(
-    new openai.Configuration({
-      apiKey: '',
-    })
-  );
+  
   constructor(private readonly _extensionUri: vscode.Uri) {}
 
   public resolveWebviewView(webviewView: vscode.WebviewView) {
@@ -21,45 +15,6 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     };
 
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
-
-    // Listen for messages from the Sidebar component and execute action
-    webviewView.webview.onDidReceiveMessage(async (data) => {
-      switch (data.type) {
-        case 'updateHighlightedText': {
-          if (data.value) {
-            let editor = vscode.window.activeTextEditor;
-            if (editor === undefined) {
-              vscode.window.showErrorMessage('No active text editor');
-              return;
-            }
-
-            let text = editor.document.getText(editor.selection);
-            this._view?.webview.postMessage({
-              type: 'onSelectedText',
-              value: text,
-            });
-          }
-          break;
-        }
-        case 'getQuery': {
-          if (data.value) {
-            this._openai
-              .createChatCompletion({
-                model: 'gpt-3.5-turbo',
-                messages: [{ role: 'user', content: 'hello chatgpt' }],
-              })
-              .then((res) => {
-                this._view?.webview.postMessage({
-                  type: 'onChatGPTResponse',
-                  value: res.data.choices[0].message?.content,
-                });
-              })
-              .catch((err) => console.log(err));
-          }
-          break;
-        }
-      }
-    });
   }
 
   public revive(panel: vscode.WebviewView) {
