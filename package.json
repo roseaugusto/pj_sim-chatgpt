@@ -34,7 +34,7 @@
     },
     "commands": [
       {
-        "command": "programming-language-translator.helloWorld",
+        "command": "programming-language-translator.runPhp",
         "title": "Hello World"
       }
     ]
