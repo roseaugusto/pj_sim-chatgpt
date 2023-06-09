@@ -84,6 +84,17 @@ input:not([type='checkbox']),
   margin-right: 10px;
 }
 
+.api-input {
+  width: 300px;
+  margin-right: 5px;
+  border-radius: 5px;
+}
+
+.btn-save {
+  width: 100px;
+  border-radius: 5px;
+}
+
 .card {
   border-radius: 8px;
   padding: 10px;
@@ -102,4 +113,8 @@ input:not([type='checkbox']),
 input::placeholder,
 textarea::placeholder {
   color: var(--vscode-input-placeholderForeground);
+}
+
+.hidden {
+  display: none;
 }

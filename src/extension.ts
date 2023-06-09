@@ -25,8 +25,6 @@ export function activate(context: vscode.ExtensionContext) {
 												sidebarProvider
 											);
 	
-		vscode.window.showInformationMessage('Hello World from Programming Language Translator!');
-	
 	context.subscriptions.push();
 }
 
