@@ -21,6 +21,50 @@
         }
       ]
     },
+    "menus": {
+      "editor/context": [
+        {
+          "submenu": "myextensionsubmenu",
+          "group": "navigation"
+        }
+      ],
+      "myextensionsubmenu": [
+        {
+          "command": "programming-language-translator.runPython",
+          "group": "navigation"
+        },
+        {
+          "command": "programming-language-translator.runAngular",
+          "group": "navigation"
+        },
+        {
+          "command": "programming-language-translator.runC#net",
+          "group": "navigation"
+        },
+        {
+          "command": "programming-language-translator.runTypescript",
+          "group": "navigation"
+        },
+        {
+          "command": "programming-language-translator.runPhp",
+          "group": "navigation"
+        },
+        {
+          "command": "programming-language-translator.runRuby",
+          "group": "navigation"
+        },
+        {
+          "command": "programming-language-translator.runJs",
+          "group": "navigation"
+        }
+      ]
+    },
+    "submenus": [
+      {
+        "label": "Testing Framework",
+        "id": "myextensionsubmenu"
+      }
+    ],
     "views": {
       "sim-chatgpt-sidebar": [
         {
@@ -35,7 +79,31 @@
     "commands": [
       {
         "command": "programming-language-translator.runPhp",
-        "title": "Hello World"
+        "title": "PHP"
+      },
+      {
+        "command": "programming-language-translator.runRuby",
+        "title": "Ruby"
+      },
+      {
+        "command": "programming-language-translator.runJs",
+        "title": "Javascript"
+      },
+      {
+        "command": "programming-language-translator.runPython",
+        "title": "Python"
+      },
+      {
+        "command": "programming-language-translator.runAngular",
+        "title": "Angular"
+      },
+      {
+        "command": "programming-language-translator.runC#net",
+        "title": "C#.net"
+      },
+      {
+        "command": "programming-language-translator.runTypescript",
+        "title": "Typescript"
       }
     ]
   },
@@ -48,19 +116,18 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
+    "@types/vscode": "^1.78.0",
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",
     "@types/node": "16.x",
-    "@types/vscode": "^1.78.0",
     "@typescript-eslint/eslint-plugin": "^5.59.1",
     "@typescript-eslint/parser": "^5.59.1",
-    "@vscode/test-electron": "^2.3.0",
     "eslint": "^8.39.0",
     "glob": "^8.1.0",
     "mocha": "^10.2.0",
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "openai": "^3.2.1"
+    "axios": "^1.4.0"
   }
 }
