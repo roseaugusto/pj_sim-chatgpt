@@ -30,38 +30,26 @@
       ],
       "myextensionsubmenu": [
         {
-          "command": "programming-language-translator.runPython",
+          "command": "programming-language-translator.runJest",
           "group": "navigation"
         },
         {
-          "command": "programming-language-translator.runAngular",
+          "command": "programming-language-translator.runJasmine",
           "group": "navigation"
         },
         {
-          "command": "programming-language-translator.runC#net",
+          "command": "programming-language-translator.runMocha",
           "group": "navigation"
         },
         {
-          "command": "programming-language-translator.runTypescript",
-          "group": "navigation"
-        },
-        {
-          "command": "programming-language-translator.runPhp",
-          "group": "navigation"
-        },
-        {
-          "command": "programming-language-translator.runRuby",
-          "group": "navigation"
-        },
-        {
-          "command": "programming-language-translator.runJs",
+          "command": "programming-language-translator.runAVA",
           "group": "navigation"
         }
       ]
     },
     "submenus": [
       {
-        "label": "Testing Framework",
+        "label": "Create Unit Tests",
         "id": "myextensionsubmenu"
       }
     ],
@@ -78,32 +66,20 @@
     },
     "commands": [
       {
-        "command": "programming-language-translator.runPhp",
-        "title": "PHP"
+        "command": "programming-language-translator.runJest",
+        "title": "Jest"
       },
       {
-        "command": "programming-language-translator.runRuby",
-        "title": "Ruby"
+        "command": "programming-language-translator.runMocha",
+        "title": "Mocha"
       },
       {
-        "command": "programming-language-translator.runJs",
-        "title": "Javascript"
+        "command": "programming-language-translator.runJasmine",
+        "title": "Jasmine"
       },
       {
-        "command": "programming-language-translator.runPython",
-        "title": "Python"
-      },
-      {
-        "command": "programming-language-translator.runAngular",
-        "title": "Angular"
-      },
-      {
-        "command": "programming-language-translator.runC#net",
-        "title": "C#.net"
-      },
-      {
-        "command": "programming-language-translator.runTypescript",
-        "title": "Typescript"
+        "command": "programming-language-translator.runAVA",
+        "title": "AVA"
       }
     ]
   },
