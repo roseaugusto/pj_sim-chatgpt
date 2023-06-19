@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 export class SidebarProvider implements vscode.WebviewViewProvider {
   _view?: vscode.WebviewView;
   _doc?: vscode.TextDocument;
-  
+
   constructor(private readonly _extensionUri: vscode.Uri) {}
 
   public resolveWebviewView(webviewView: vscode.WebviewView) {
@@ -31,6 +31,9 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     const styleVSCodeUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, 'media/css', 'vscode.css')
     );
+    const jsVSCodeUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, 'media/js', 'main.js')
+    );
 
     // Use a nonce to only allow a specific script to be run.
     const nonce = getNonce();
@@ -39,18 +42,28 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 			<html lang="en">
 			<head>
 				<meta charset="UTF-8">
-        <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; font-src 'self'; img-src 'self' data: 'data:image/svg+xml' https:; style-src ${webview.cspSource};  script-src 'nonce-${nonce}';">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; font-src 'self'; img-src 'self' data: 'data:image/svg+xml' https:; style-src ${webview.cspSource};   script-src ${webview.cspSource};">
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 				<link href="${styleResetUri}" rel="stylesheet">
 				<link href="${styleVSCodeUri}" rel="stylesheet">
 			</head>
       <body>
-      <div class="flex">
-      <div class="logo"><img src="${logoUri}"></div>
-      <div class="card" id="highlighted-text" readonly">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus id ex ultricies, facilisis libero id, congue felis. Nulla in mi lorem. Vivamus elementum, lectus vel congue bibendum, sapien orci gravida mauris, vitae eleifend tortor odio non nunc. Quisque ac elit sed mauris vulputate hendrerit. Duis vitae purus id sem congue eleifend at vel mi. Aliquam malesuada congue vestibulum. Ut sollicitudin dolor a hendrerit bibendum. Nulla id nulla condimentum, pellentesque mi id, fringilla est. Vestibulum id nibh a sem feugiat tristique.
+      <form class="flex" id="myForm">
+        <input type="text" id="api-key" class="api-input code" placeholder="ChatGPT API Key"></input>
+        <button class="btn-save" type="submit">Save</button>
+      </form>
+      <code id="message">Please enter your ChatGPT API Key. Make sure you have enough credits to use ChatGPT API. Your API key will be stored in vscode secret storage.</code>
+      <hr id="divider"/>
+      <div class="flex" id="search-output">
+        <div class="logo">
+          <img src="${logoUri}">
+        </div>
+        <div class="card " readonly">
+          <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus id ex ultricies, facilisis libero id, congue felis. Nulla in mi lorem. Vivamus elementum, lectus vel congue bibendum, sapien orci gravida mauris, vitae eleifend tortor odio non nunc. Quisque ac elit sed mauris vulputate hendrerit. Duis vitae purus id sem congue eleifend at vel mi. Aliquam malesuada congue vestibulum. Ut sollicitudin dolor a hendrerit bibendum. Nulla id nulla condimentum, pellentesque mi id, fringilla est. Vestibulum id nibh a sem feugiat tristique.
+          </p>
+        </div>
       </div>
-      </div>
+      <script  nonce="${nonce}" src="${jsVSCodeUri}"></script>
 	    </body>
 	</html>`;
   }
