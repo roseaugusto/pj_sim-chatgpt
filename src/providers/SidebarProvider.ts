@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 export class SidebarProvider implements vscode.WebviewViewProvider {
   _view?: vscode.WebviewView;
   _doc?: vscode.TextDocument;
-  
+
   constructor(private readonly _extensionUri: vscode.Uri) {}
 
   public resolveWebviewView(webviewView: vscode.WebviewView) {
@@ -32,7 +32,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       vscode.Uri.joinPath(this._extensionUri, 'media/css', 'vscode.css')
     );
     const jsVSCodeUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, 'media/js', 'script.js')
+      vscode.Uri.joinPath(this._extensionUri, 'media/js', 'main.js')
     );
 
     // Use a nonce to only allow a specific script to be run.
@@ -49,10 +49,12 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 			</head>
       <body>
       <form class="flex" id="myForm">
-        <input type="text" id="api-key" class="api-input" placeholder="API key"></input>
+        <input type="text" id="api-key" class="api-input code" placeholder="ChatGPT API Key"></input>
         <button class="btn-save" type="submit">Save</button>
       </form>
-      <div class="flex hidden" id="search-output">
+      <code id="message">Please enter your ChatGPT API Key. Make sure you have enough credits to use ChatGPT API. Your API key will be stored in vscode secret storage.</code>
+      <hr id="divider"/>
+      <div class="flex" id="search-output">
         <div class="logo">
           <img src="${logoUri}">
         </div>
@@ -61,7 +63,6 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           </p>
         </div>
       </div>
-      <h2 id="message"></h2>
       <script  nonce="${nonce}" src="${jsVSCodeUri}"></script>
 	    </body>
 	</html>`;

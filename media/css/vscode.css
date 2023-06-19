@@ -74,7 +74,6 @@ button.secondary:hover {
 }
 
 input:not([type='checkbox']),
-
 .flex {
   display: flex;
   flex-direction: row;
@@ -110,11 +109,21 @@ input:not([type='checkbox']),
   background-color: #545454;
 }
 
-input::placeholder,
 textarea::placeholder {
   color: var(--vscode-input-placeholderForeground);
 }
 
+input::placeholder {
+  color: var(--vscode-input-placeholderBackground);
+  font-size: var(--vscode-editor-font-size);
+  font-family: var(--vscode-editor-font-family);
+}
+
 .hidden {
   display: none;
+}
+
+hr {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 }

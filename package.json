@@ -16,7 +16,7 @@
       "activitybar": [
         {
           "id": "sim-chatgpt-sidebar",
-          "title": "Sim chatgpt sidebar",
+          "title": "SIM ChatGPT",
           "icon": "media/icons/icon.svg"
         }
       ]
@@ -25,6 +25,12 @@
       "editor/context": [
         {
           "submenu": "myextensionsubmenu",
+          "group": "navigation"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "programming-language-translator.runApiKey",
           "group": "navigation"
         }
       ],
@@ -58,13 +64,18 @@
         {
           "type": "webview",
           "id": "sim-chatgpt-sidebar",
-          "name": "Sim chatgpt",
+          "name": "Unit Test",
           "icon": "media/icons/icon.svg",
-          "contextualTitle": "sidebar test"
+          "contextualTitle": "SIM ChatGPT"
         }
       ]
     },
     "commands": [
+      {
+        "command": "programming-language-translator.runApiKey",
+        "title": "ChatGPT API Key",
+        "icon": "media/icons/key.svg"
+      },
       {
         "command": "programming-language-translator.runJest",
         "title": "Jest"
