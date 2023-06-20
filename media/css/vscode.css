@@ -109,6 +109,63 @@ input:not([type='checkbox']),
   background-color: #545454;
 }
 
+#input-query {
+  font-size: small;
+  background-color: var(--vscode-editor-background);
+  font-family: var(--vscode-editor-font-family);
+  color: var(--vscode-foreground);
+}
+
+.w-full {
+  width: 100%;
+}
+
+.rounded-md {
+  border-radius: 0.375rem;
+}
+
+.p-2 {
+  padding: 0.5rem;
+}
+
+.mb-5 {
+  margin-bottom: 1.25rem;
+}
+
+.user {
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.trash {
+  cursor: pointer;
+}
+
+.space-y-2 > * + * {
+  margin-top: 0.5rem;
+}
+
+svg {
+  color: var(--vscode-foreground);
+}
+
+.resize-vertical {
+  resize: vertical;
+  min-height: 50px;
+  max-height: 500px;
+  height: auto;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.h-auto {
+  height: auto;
+}
+
+input::placeholder,
 textarea::placeholder {
   color: var(--vscode-input-placeholderForeground);
 }

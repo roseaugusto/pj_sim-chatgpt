@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
+
 export class SidebarProvider implements vscode.WebviewViewProvider {
   _view?: vscode.WebviewView;
   _doc?: vscode.TextDocument;
-
   constructor(private readonly _extensionUri: vscode.Uri) {}
 
   public resolveWebviewView(webviewView: vscode.WebviewView) {
@@ -15,6 +15,28 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     };
 
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+
+    // Listen for messages from the Sidebar component and execute action
+    webviewView.webview.onDidReceiveMessage(async (data) => {
+      switch (data.type) {
+        case 'updateHighlightedText': {
+          if (data.value) {
+            let editor = vscode.window.activeTextEditor;
+            if (editor === undefined) {
+              vscode.window.showErrorMessage('No active text editor');
+              return;
+            }
+
+            let text = editor.document.getText(editor.selection);
+            this._view?.webview.postMessage({
+              type: 'onSelectedText',
+              value: text,
+            });
+          }
+          break;
+        }
+      }
+    });
   }
 
   public revive(panel: vscode.WebviewView) {
@@ -24,6 +46,12 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   private _getHtmlForWebview(webview: vscode.Webview) {
     const logoUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, 'media/icons', 'icon.svg')
+    );
+    const userUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, 'media/icons', 'user.svg')
+    );
+    const trashUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, 'media/icons', 'trash.svg')
     );
     const styleResetUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, 'media/css', 'reset.css')
@@ -54,6 +82,13 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       </form>
       <code id="message">Please enter your ChatGPT API Key. Make sure you have enough credits to use ChatGPT API. Your API key will be stored in vscode secret storage.</code>
       <hr id="divider"/>
+      <div class="flex mb-5">
+        <textarea id="input-query" readonly placeholder="Highlight code snippet to ask GPT..." class="w-full resize-vertical rounded-md p-2"></textarea>
+        <div class="user space-y-2">
+          <img src="${userUri}">
+          <img class="trash" id="clear-input" src="${trashUri}">
+        </div>
+      </div>
       <div class="flex" id="search-output">
         <div class="logo">
           <img src="${logoUri}">
