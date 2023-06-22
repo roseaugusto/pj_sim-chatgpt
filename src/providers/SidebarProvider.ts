@@ -1,9 +1,20 @@
 import * as vscode from 'vscode';
-
+import * as openai from 'openai';
 export class SidebarProvider implements vscode.WebviewViewProvider {
   _view?: vscode.WebviewView;
   _doc?: vscode.TextDocument;
-  constructor(private readonly _extensionUri: vscode.Uri) {}
+  _openAI?: openai.OpenAIApi;
+  _extensionUri: vscode.Uri;
+  constructor(private _context: vscode.ExtensionContext) {
+    this._extensionUri = _context.extensionUri;
+    this._context.secrets.get('apiKey').then((key) => {
+      this._openAI = new openai.OpenAIApi(
+        new openai.Configuration({
+          apiKey: key,
+        })
+      );
+    });
+  }
 
   public resolveWebviewView(webviewView: vscode.WebviewView) {
     this._view = webviewView;
@@ -19,20 +30,44 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     // Listen for messages from the Sidebar component and execute action
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.type) {
-        case 'updateHighlightedText': {
-          if (data.value) {
-            let editor = vscode.window.activeTextEditor;
-            if (editor === undefined) {
-              vscode.window.showErrorMessage('No active text editor');
-              return;
-            }
-
-            let text = editor.document.getText(editor.selection);
+        case 'saveApiKey': {
+          this._context.secrets.store('apiKey', data.value);
+          this._openAI = new openai.OpenAIApi(
+            new openai.Configuration({
+              apiKey: data.value,
+            })
+          );
+          break;
+        }
+        case 'getApiKey': {
+          this._context.secrets.get('apiKey').then((key) => {
             this._view?.webview.postMessage({
-              type: 'onSelectedText',
-              value: text,
+              type: 'onLoadApiKey',
+              value: key,
             });
-          }
+          });
+          break;
+        }
+        case 'queryChatGPT': {
+          this._openAI
+            ?.createChatCompletion({
+              model: 'gpt-3.5-turbo',
+              messages: [{ role: 'user', content: data.value }],
+            })
+            .then((res) => {
+              this._view?.webview.postMessage({
+                type: 'onChatGPTResponse',
+                value: res.data.choices[0].message?.content,
+              });
+              const editor = vscode.window.activeTextEditor;
+              const selection = editor?.selection;
+              editor?.edit((editBuilder) => {
+                editBuilder.insert(
+                  selection?.end as vscode.Position,
+                  `\n${res.data.choices[0].message?.content}`
+                );
+              });
+            });
           break;
         }
       }
@@ -46,6 +81,9 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   private _getHtmlForWebview(webview: vscode.Webview) {
     const logoUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, 'media/icons', 'icon.svg')
+    );
+    const gearUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, 'media/icons', 'gear.svg')
     );
     const userUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, 'media/icons', 'user.svg')
@@ -93,9 +131,14 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         <div class="logo">
           <img src="${logoUri}">
         </div>
-        <div class="card " readonly">
-          <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus id ex ultricies, facilisis libero id, congue felis. Nulla in mi lorem. Vivamus elementum, lectus vel congue bibendum, sapien orci gravida mauris, vitae eleifend tortor odio non nunc. Quisque ac elit sed mauris vulputate hendrerit. Duis vitae purus id sem congue eleifend at vel mi. Aliquam malesuada congue vestibulum. Ut sollicitudin dolor a hendrerit bibendum. Nulla id nulla condimentum, pellentesque mi id, fringilla est. Vestibulum id nibh a sem feugiat tristique.
-          </p>
+        <div class="card" readonly">
+          <textarea id="response-container" readonly class="w-full p-2" placeholder="Hello! How can I help you with unit testing today?"></textarea>
+        </div>
+      </div>
+      <div id="gear-container" class="hidden">
+        <div id="gear">
+          <img width="50" height="50" src="${gearUri}">
+          <p>Composing...</p>
         </div>
       </div>
       <script  nonce="${nonce}" src="${jsVSCodeUri}"></script>

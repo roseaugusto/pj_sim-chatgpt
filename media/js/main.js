@@ -3,8 +3,17 @@
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
 (function () {
+  const vscode = acquireVsCodeApi();
+
   document.getElementById('myForm').addEventListener('submit', handleSubmit);
 
+  window.addEventListener(
+    'load',
+    () => {
+      vscode.postMessage({ type: 'getApiKey', value: null });
+    },
+    { capture: true }
+  );
   window.addEventListener('message', (event) => {
     const message = event.data;
     switch (message.type) {
@@ -24,6 +33,29 @@
         textarea.style.height = Math.min(textarea.scrollHeight, 500) + 'px';
         break;
       }
+      case 'onLoadApiKey': {
+        if (message.value) {
+          getApiInputField('hidden');
+        }
+        break;
+      }
+      case 'onCommandClicked': {
+        const textarea = document.getElementById('input-query');
+        textarea.value = message.value + textarea.value;
+        textarea.style.height = '';
+        textarea.style.height = Math.min(textarea.scrollHeight, 500) + 'px';
+        handleLoading(true);
+        vscode.postMessage({ type: 'queryChatGPT', value: textarea.value });
+        break;
+      }
+      case 'onChatGPTResponse': {
+        handleLoading(false);
+        const container = document.getElementById('response-container');
+        container.value = message.value;
+        container.style.height = '';
+        container.style.height = container.scrollHeight + 'px';
+        break;
+      }
     }
   });
 
@@ -33,6 +65,19 @@
     let apiKey = apiKeyInput.value.trim();
     if (apiKey !== '') {
       getApiInputField('hidden');
+      vscode.postMessage({ type: 'saveApiKey', value: apiKey });
+    }
+  }
+
+  function handleLoading(isLoading) {
+    let searchOutput = document.getElementById('search-output');
+    let loading = document.getElementById('gear-container');
+    if (isLoading) {
+      searchOutput.classList.add('hidden');
+      loading.classList.remove('hidden');
+    } else {
+      searchOutput.classList.remove('hidden');
+      loading.classList.add('hidden');
     }
   }
 

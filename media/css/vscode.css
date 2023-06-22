@@ -96,7 +96,6 @@ input:not([type='checkbox']),
 
 .card {
   border-radius: 8px;
-  padding: 10px;
   display: block;
   height: auto;
   width: 100%;
@@ -183,4 +182,28 @@ input::placeholder {
 hr {
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
+}
+
+#response-container {
+  font-family: var(--vscode-editor-font-family);
+  font-size: small;
+  background-color: #545454;
+  color: #ffffff;
+  border: none;
+  outline: none;
+  resize: none;
+  height: auto;
+  min-height: 50px;
+  overflow: hidden;
+}
+
+#gear-container {
+  width: 100%;
+}
+
+#gear {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
 }
