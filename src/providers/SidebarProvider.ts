@@ -67,6 +67,9 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                   `\n${res.data.choices[0].message?.content}`
                 );
               });
+            }
+            ).catch(error => {
+             vscode.window.showErrorMessage('SIM ChatGPT: ' + error.response.data.error.message || error.message);
             });
           break;
         }
