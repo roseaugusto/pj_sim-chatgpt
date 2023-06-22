@@ -1,30 +1,32 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { SidebarProvider } from './providers/SidebarProvider';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-  // Use the console to output diagnostic information (console.log) and errors (console.error)
-  // This line of code will only be executed once when your extension is activated
-  console.log(
-    'Congratulations, your extension "programming-language-translator" is now active!'
-  );
-
-  // The command has been defined in the package.json file
-  // Now provide the implementation of the command with registerCommand
-  // The commandId parameter must match the command field in package.json
-
-  // The code you place here will be executed every time your command is executed
-  // Display a message box to the user
-
-  const sidebarProvider = new SidebarProvider(context.extensionUri);
+  const sidebarProvider = new SidebarProvider(context);
   vscode.window.registerWebviewViewProvider(
     'sim-chatgpt-sidebar',
     sidebarProvider
   );
-  vscode.commands.registerCommand(
+
+  const runUnitTestCommand = (type: string) => {
+    if (!sidebarProvider._view?.visible) {
+      sidebarProvider._view?.show();
+      const editor = vscode.window.activeTextEditor;
+      const selection = editor?.selection;
+      const highlightedText = editor?.document.getText(selection);
+      sidebarProvider._view?.webview.postMessage({
+        type: 'onSelectedText',
+        value: highlightedText,
+      });
+    }
+    let query = `Create a unit test using ${type}:\n`;
+    sidebarProvider._view?.webview.postMessage({
+      type: 'onCommandClicked',
+      value: query,
+    });
+  };
+
+  const disposable1 = vscode.commands.registerCommand(
     'programming-language-translator.runApiKey',
     () => {
       sidebarProvider._view?.webview.postMessage({
@@ -33,6 +35,31 @@ export function activate(context: vscode.ExtensionContext) {
       });
     }
   );
+  context.subscriptions.push(disposable1);
+
+  const disposable2 = vscode.commands.registerCommand(
+    'programming-language-translator.runJest',
+    () => runUnitTestCommand('Jest')
+  );
+  context.subscriptions.push(disposable2);
+
+  const disposable3 = vscode.commands.registerCommand(
+    'programming-language-translator.runJasmine',
+    () => runUnitTestCommand('Jasmine')
+  );
+  context.subscriptions.push(disposable3);
+
+  const disposable4 = vscode.commands.registerCommand(
+    'programming-language-translator.runMocha',
+    () => runUnitTestCommand('Mocha')
+  );
+  context.subscriptions.push(disposable4);
+
+  const disposable5 = vscode.commands.registerCommand(
+    'programming-language-translator.runAVA',
+    () => runUnitTestCommand('Ava')
+  );
+  context.subscriptions.push(disposable5);
 
   vscode.window.onDidChangeTextEditorSelection((event) => {
     if (event.kind !== vscode.TextEditorSelectionChangeKind.Mouse) {
@@ -52,8 +79,6 @@ export function activate(context: vscode.ExtensionContext) {
       value: highlightedText,
     });
   });
-
-  context.subscriptions.push();
 }
 
 // This method is called when your extension is deactivated
