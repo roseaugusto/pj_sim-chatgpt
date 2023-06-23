@@ -1,71 +1,42 @@
-# programming-language-translator README
+# ⚙️ SIM ChatGPT: Unit Test
 
-This is the README for your extension "programming-language-translator". After writing up a brief description, we recommend including the following sections.
+SIM ChatGPT: Unit Test is an internal simulation project of Sun\*. This is a vscode extension developed for the purpose of collaborative and assistive development tool for the software developers. This extension focuses on creating/suggesting unit tests from code snippets upon highlighting, powered by OpenAI GPT API. It allows them to choose whatever testing framework they prefer as specified and provided by the extension. Try installing `SIM ChatGPT: Unit Test` now and use it in your development phase with ease!
 
-## Features
+## 🔗 Link
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+https://marketplace.visualstudio.com/items?itemName=pj-sim-chatgpt-dev.sim-chatgpt-unit-test
 
-For example if there is an image subfolder under your extension project workspace:
+## ⭐ Features
 
-\!\[feature X\]\(images/feature-x.png\)
+- Code snippet easy highlighting.
+- ChatGPT integration.
+- Replaceable OpenAI API Key.
+- Directly append results to your file below the highlighted code snippet.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## 🔑 Requirements
 
-## Requirements
+Register an OpenAI API account and create a secret key for it. Copy and paste the secret key to the API Key input field in the extension after the installation.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+> You may opt to create a new account preferably using your personal email address to get a $5 free credit from OpenAI and use the API for free.
 
-## Extension Settings
+## 👆 How to use
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+1. On your opened file, highlight a code snippet function that you would like to generate unit test
+2. Right click on the highlighted code snippet
+3. Navigate to the `Create Unit Test` menu and choose from any of the following options
+4. Wait for the results to be displayed
+5. The result will also be appended below the highlighted code snippet
 
-For example:
+## 👤 Developers
 
-This extension contributes the following settings:
+- Augusto, Rose
+- Oliverio, Rogelio John
+- Vilo, Bruce Nigel
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
+## 💻 Release Notes
 
 ### 1.0.0
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+Initial release of SIM ChatGPT: Unit Test
 
 **Enjoy!**

@@ -1,6 +1,12 @@
 {
-  "name": "programming-language-translator",
-  "displayName": "Programming Language Translator",
+  "name": "sim-chatgpt-unit-test",
+  "displayName": "SIM ChatGPT: Unit Test",
+  "publisher": "pj-sim-chatgpt-dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/roseaugusto/pj_sim-chatgpt/"
+  },
+  "icon": "media/icons/logo.png",
   "description": "",
   "version": "0.0.1",
   "engines": {
@@ -30,25 +36,25 @@
       ],
       "view/title": [
         {
-          "command": "programming-language-translator.runApiKey",
+          "command": "sim-chatgpt-unit-test.runApiKey",
           "group": "navigation"
         }
       ],
       "myextensionsubmenu": [
         {
-          "command": "programming-language-translator.runJest",
+          "command": "sim-chatgpt-unit-test.runJest",
           "group": "navigation"
         },
         {
-          "command": "programming-language-translator.runJasmine",
+          "command": "sim-chatgpt-unit-test.runJasmine",
           "group": "navigation"
         },
         {
-          "command": "programming-language-translator.runMocha",
+          "command": "sim-chatgpt-unit-test.runMocha",
           "group": "navigation"
         },
         {
-          "command": "programming-language-translator.runAVA",
+          "command": "sim-chatgpt-unit-test.runAVA",
           "group": "navigation"
         }
       ]
@@ -66,30 +72,31 @@
           "id": "sim-chatgpt-sidebar",
           "name": "Unit Test",
           "icon": "media/icons/icon.svg",
-          "contextualTitle": "SIM ChatGPT"
+          "contextualTitle": "SIM ChatGPT",
+          "visibility": "visible"
         }
       ]
     },
     "commands": [
       {
-        "command": "programming-language-translator.runApiKey",
+        "command": "sim-chatgpt-unit-test.runApiKey",
         "title": "ChatGPT API Key",
         "icon": "media/icons/key.svg"
       },
       {
-        "command": "programming-language-translator.runJest",
+        "command": "sim-chatgpt-unit-test.runJest",
         "title": "Jest"
       },
       {
-        "command": "programming-language-translator.runMocha",
+        "command": "sim-chatgpt-unit-test.runMocha",
         "title": "Mocha"
       },
       {
-        "command": "programming-language-translator.runJasmine",
+        "command": "sim-chatgpt-unit-test.runJasmine",
         "title": "Jasmine"
       },
       {
-        "command": "programming-language-translator.runAVA",
+        "command": "sim-chatgpt-unit-test.runAVA",
         "title": "AVA"
       }
     ]
