@@ -1,15 +1,17 @@
 import * as vscode from 'vscode';
 import { SidebarProvider } from './providers/SidebarProvider';
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
   const sidebarProvider = new SidebarProvider(context);
-  vscode.window.registerWebviewViewProvider(
+  const sidebarDisposable = vscode.window.registerWebviewViewProvider(
     'sim-chatgpt-sidebar',
     sidebarProvider
   );
+  context.subscriptions.push(sidebarDisposable);
 
-  const runUnitTestCommand = (type: string) => {
-    if (!sidebarProvider._view?.visible) {
+  const runUnitTestCommand = async (type: string) => {
+    await vscode.commands.executeCommand('sim-chatgpt-sidebar.focus');
+    setTimeout(() => {
       sidebarProvider._view?.show();
       const editor = vscode.window.activeTextEditor;
       const selection = editor?.selection;
@@ -18,16 +20,16 @@ export function activate(context: vscode.ExtensionContext) {
         type: 'onSelectedText',
         value: highlightedText,
       });
-    }
-    let query = `Create a unit test using ${type}:\n`;
-    sidebarProvider._view?.webview.postMessage({
-      type: 'onCommandClicked',
-      value: query,
-    });
+      let query = `Create a unit test using ${type}:\n`;
+      sidebarProvider._view?.webview.postMessage({
+        type: 'onCommandClicked',
+        value: query,
+      });
+    }, 100);
   };
 
-  const disposable1 = vscode.commands.registerCommand(
-    'programming-language-translator.runApiKey',
+  const apiKeyCommandDisposable = vscode.commands.registerCommand(
+    'sim-chatgpt-unit-test.runApiKey',
     () => {
       sidebarProvider._view?.webview.postMessage({
         type: 'isApiKeyClicked',
@@ -35,31 +37,31 @@ export function activate(context: vscode.ExtensionContext) {
       });
     }
   );
-  context.subscriptions.push(disposable1);
+  context.subscriptions.push(apiKeyCommandDisposable);
 
-  const disposable2 = vscode.commands.registerCommand(
-    'programming-language-translator.runJest',
+  const jestCommandDisposable = vscode.commands.registerCommand(
+    'sim-chatgpt-unit-test.runJest',
     () => runUnitTestCommand('Jest')
   );
-  context.subscriptions.push(disposable2);
+  context.subscriptions.push(jestCommandDisposable);
 
-  const disposable3 = vscode.commands.registerCommand(
-    'programming-language-translator.runJasmine',
+  const jasmineCommandDisposable = vscode.commands.registerCommand(
+    'sim-chatgpt-unit-test.runJasmine',
     () => runUnitTestCommand('Jasmine')
   );
-  context.subscriptions.push(disposable3);
+  context.subscriptions.push(jasmineCommandDisposable);
 
-  const disposable4 = vscode.commands.registerCommand(
-    'programming-language-translator.runMocha',
+  const mochaCommandDisposable = vscode.commands.registerCommand(
+    'sim-chatgpt-unit-test.runMocha',
     () => runUnitTestCommand('Mocha')
   );
-  context.subscriptions.push(disposable4);
+  context.subscriptions.push(mochaCommandDisposable);
 
-  const disposable5 = vscode.commands.registerCommand(
-    'programming-language-translator.runAVA',
+  const avaCommandDisposable = vscode.commands.registerCommand(
+    'sim-chatgpt-unit-test.runAVA',
     () => runUnitTestCommand('Ava')
   );
-  context.subscriptions.push(disposable5);
+  context.subscriptions.push(avaCommandDisposable);
 
   vscode.window.onDidChangeTextEditorSelection((event) => {
     if (event.kind !== vscode.TextEditorSelectionChangeKind.Mouse) {
