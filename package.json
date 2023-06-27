@@ -56,6 +56,22 @@
         {
           "command": "sim-chatgpt-unit-test.runAVA",
           "group": "navigation"
+        },
+        {
+          "command": "sim-chatgpt-unit-test.runCypress",
+          "group": "navigation"
+        },
+        {
+          "command": "sim-chatgpt-unit-test.runStorybook",
+          "group": "navigation"
+        },
+        {
+          "command": "sim-chatgpt-unit-test.runPuppeteer",
+          "group": "navigation"
+        },
+        {
+          "command": "sim-chatgpt-unit-test.runPlaywright",
+          "group": "navigation"
         }
       ]
     },
@@ -98,6 +114,22 @@
       {
         "command": "sim-chatgpt-unit-test.runAVA",
         "title": "AVA"
+      },
+      {
+        "command": "sim-chatgpt-unit-test.runCypress",
+        "title": "Cypress"
+      },
+      {
+        "command": "sim-chatgpt-unit-test.runPuppeteer",
+        "title": "Puppeteer"
+      },
+      {
+        "command": "sim-chatgpt-unit-test.runStorybook",
+        "title": "Storybook"
+      },
+      {
+        "command": "sim-chatgpt-unit-test.runPlaywright",
+        "title": "Playwright"
       }
     ]
   },
