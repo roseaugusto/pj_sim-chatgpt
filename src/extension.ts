@@ -86,6 +86,23 @@ export async function activate(context: vscode.ExtensionContext) {
     () => runUnitTestCommand('Playwright')
   );
   context.subscriptions.push(playwrightCommandDisposable);
+  const phpUnitCommandDisposable = vscode.commands.registerCommand(
+    'sim-chatgpt-unit-test.runPHPUnit',
+    () => runUnitTestCommand('PHPUnit')
+  );
+  context.subscriptions.push(phpUnitCommandDisposable);
+
+  const rspecCommandDisposable = vscode.commands.registerCommand(
+    'sim-chatgpt-unit-test.runRSpec',
+    () => runUnitTestCommand('RSpec')
+  );
+  context.subscriptions.push(rspecCommandDisposable);
+
+  const pyTestCommandDisposable = vscode.commands.registerCommand(
+    'sim-chatgpt-unit-test.runPyTest',
+    () => runUnitTestCommand('PyTest')
+  );
+  context.subscriptions.push(pyTestCommandDisposable);
 
   vscode.window.onDidChangeTextEditorSelection((event) => {
     if (event.kind !== vscode.TextEditorSelectionChangeKind.Mouse) {
