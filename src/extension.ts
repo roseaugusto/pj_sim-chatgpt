@@ -63,6 +63,30 @@ export async function activate(context: vscode.ExtensionContext) {
   );
   context.subscriptions.push(avaCommandDisposable);
 
+  const cypressCommandDisposable = vscode.commands.registerCommand(
+    'sim-chatgpt-unit-test.runCypress',
+    () => runUnitTestCommand('Cypress')
+  );
+  context.subscriptions.push(cypressCommandDisposable);
+
+  const storybookCommandDisposable = vscode.commands.registerCommand(
+    'sim-chatgpt-unit-test.runStorybook',
+    () => runUnitTestCommand('Storybook')
+  );
+  context.subscriptions.push(storybookCommandDisposable);
+
+  const puppeteerCommandDisposable = vscode.commands.registerCommand(
+    'sim-chatgpt-unit-test.runPuppeteer',
+    () => runUnitTestCommand('Puppeteer')
+  );
+  context.subscriptions.push(puppeteerCommandDisposable);
+
+  const playwrightCommandDisposable = vscode.commands.registerCommand(
+    'sim-chatgpt-unit-test.runPlaywright',
+    () => runUnitTestCommand('Playwright')
+  );
+  context.subscriptions.push(playwrightCommandDisposable);
+
   vscode.window.onDidChangeTextEditorSelection((event) => {
     if (event.kind !== vscode.TextEditorSelectionChangeKind.Mouse) {
       return;
