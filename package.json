@@ -72,6 +72,17 @@
         {
           "command": "sim-chatgpt-unit-test.runPlaywright",
           "group": "navigation"
+        },{
+          "command": "sim-chatgpt-unit-test.runPHPUnit",
+          "group": "navigation"
+        },
+        {
+          "command": "sim-chatgpt-unit-test.runPyTest",
+          "group": "navigation"
+        },
+        {
+          "command": "sim-chatgpt-unit-test.runRSpec",
+          "group": "navigation"
         }
       ]
     },
@@ -130,6 +141,18 @@
       {
         "command": "sim-chatgpt-unit-test.runPlaywright",
         "title": "Playwright"
+      },
+      {
+        "command": "sim-chatgpt-unit-test.runPHPUnit",
+        "title": "PHPUnit   "
+      },
+      {
+        "command": "sim-chatgpt-unit-test.runPyTest",
+        "title": "PyTest"
+      },
+      {
+        "command": "sim-chatgpt-unit-test.runRSpec",
+        "title": "RSpec"
       }
     ]
   },
