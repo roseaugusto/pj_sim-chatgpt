@@ -38,5 +38,8 @@ Register an OpenAI API account and create a secret key for it. Copy and paste th
 ### 1.0.0
 
 Initial release of SIM ChatGPT: Unit Test
+### 1.0.1
+
+Update list of testing frameworks and resolve API Key navigation
 
 **Enjoy!**

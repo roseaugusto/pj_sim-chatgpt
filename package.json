@@ -8,7 +8,7 @@
   },
   "icon": "media/icons/logo.png",
   "description": "",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "engines": {
     "vscode": "^1.78.0"
   },
@@ -37,7 +37,8 @@
       "view/title": [
         {
           "command": "sim-chatgpt-unit-test.runApiKey",
-          "group": "navigation"
+          "group": "navigation",
+          "when": "view == sim-chatgpt-sidebar"
         }
       ],
       "myextensionsubmenu": [
@@ -72,7 +73,8 @@
         {
           "command": "sim-chatgpt-unit-test.runPlaywright",
           "group": "navigation"
-        },{
+        },
+        {
           "command": "sim-chatgpt-unit-test.runPHPUnit",
           "group": "navigation"
         },
