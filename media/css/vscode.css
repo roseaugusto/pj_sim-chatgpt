@@ -96,7 +96,8 @@ input:not([type='checkbox']),
 
 .card {
   border-radius: 8px;
-  display: block;
+  display: flex;
+  align-items: center;
   height: auto;
   width: 100%;
   border: none;
@@ -193,6 +194,7 @@ hr {
   outline: none;
   resize: none;
   height: auto;
+  border-radius: 5px;
   min-height: 50px;
   overflow: hidden;
 }
@@ -206,4 +208,19 @@ hr {
   width: 100%;
   align-items: center;
   justify-content: center;
+}
+
+#search-output {
+  display: flex;
+}
+
+#search-output-icons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#cancel {
+  margin-right: 10px;
+  cursor: pointer;
 }
