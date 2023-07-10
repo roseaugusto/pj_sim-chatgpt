@@ -110,7 +110,10 @@
       {
         "command": "sim-chatgpt-unit-test.runApiKey",
         "title": "ChatGPT API Key",
-        "icon": "media/icons/key.svg"
+        "icon": {
+          "light": "media/icons/key-dark.svg",
+          "dark": "media/icons/key-light.svg"
+        }
       },
       {
         "command": "sim-chatgpt-unit-test.runJest",
