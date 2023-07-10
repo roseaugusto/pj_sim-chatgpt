@@ -70,14 +70,17 @@
   }
 
   function handleLoading(isLoading) {
-    let searchOutput = document.getElementById('search-output');
+    let searchOutput = document.getElementById('response-container');
     let loading = document.getElementById('gear-container');
+    let cancel = document.getElementById('cancel');
     if (isLoading) {
       searchOutput.classList.add('hidden');
       loading.classList.remove('hidden');
+      cancel.classList.remove('hidden');
     } else {
       searchOutput.classList.remove('hidden');
       loading.classList.add('hidden');
+      cancel.classList.add('hidden');
     }
   }
 
@@ -101,5 +104,10 @@
     const textarea = document.getElementById('input-query');
     textarea.value = '';
     textarea.style.height = '';
+  };
+
+  const cancelLoading = document.getElementById('cancel');
+  cancelLoading.onclick = () => {
+    vscode.postMessage({ type: 'cancelQuery', value: null });
   };
 })();

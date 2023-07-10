@@ -5,6 +5,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   _doc?: vscode.TextDocument;
   _openAI?: openai.OpenAIApi;
   _extensionUri: vscode.Uri;
+  _isCancelled: boolean = false;
   constructor(private _context: vscode.ExtensionContext) {
     this._extensionUri = _context.extensionUri;
     this._context.secrets.get('apiKey').then((key) => {
@@ -48,6 +49,14 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           });
           break;
         }
+        case 'cancelQuery': {
+          this._isCancelled = true;
+          this._view?.webview.postMessage({
+            type: 'onChatGPTResponse',
+            value: '',
+          });
+          break;
+        }
         case 'queryChatGPT': {
           this._openAI
             ?.createChatCompletion({
@@ -55,21 +64,34 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
               messages: [{ role: 'user', content: data.value }],
             })
             .then((res) => {
-              this._view?.webview.postMessage({
-                type: 'onChatGPTResponse',
-                value: res.data.choices[0].message?.content,
-              });
-              const editor = vscode.window.activeTextEditor;
-              const selection = editor?.selection;
-              editor?.edit((editBuilder) => {
-                editBuilder.insert(
-                  selection?.end as vscode.Position,
-                  `\n${res.data.choices[0].message?.content}`
-                );
-              });
-            }
-            ).catch(error => {
-             vscode.window.showErrorMessage('SIM ChatGPT: ' + error.response.data.error.message || error.message);
+              if (!this._isCancelled) {
+                this._view?.webview.postMessage({
+                  type: 'onChatGPTResponse',
+                  value: res.data.choices[0].message?.content,
+                });
+                const editor = vscode.window.activeTextEditor;
+                const selection = editor?.selection;
+                editor?.edit((editBuilder) => {
+                  editBuilder.insert(
+                    selection?.end as vscode.Position,
+                    `\n${res.data.choices[0].message?.content}`
+                  );
+                });
+              }
+              this._isCancelled = false;
+            })
+            .catch((error) => {
+              if (!this._isCancelled) {
+                this._view?.webview.postMessage({
+                  type: 'onChatGPTResponse',
+                  value: error.response.data.error.message,
+                });
+              }
+              vscode.window.showErrorMessage(
+                'SIM ChatGPT: ' + error.response.data.error.message ||
+                  error.message
+              );
+              this._isCancelled = false;
             });
           break;
         }
@@ -84,6 +106,9 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   private _getHtmlForWebview(webview: vscode.Webview) {
     const logoUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, 'media/icons', 'icon.svg')
+    );
+    const cancelUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, 'media/icons', 'cancel.svg')
     );
     const gearUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, 'media/icons', 'gear.svg')
@@ -130,18 +155,22 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           <img class="trash" id="clear-input" src="${trashUri}">
         </div>
       </div>
-      <div class="flex" id="search-output">
-        <div class="logo">
-          <img src="${logoUri}">
+      <div id="search-output">
+        <div id="search-output-icons">
+          <div class="logo">
+            <img src="${logoUri}">
+          </div>
+          <div id="cancel" class="hidden">
+            <img src="${cancelUri}">
+          </div>
         </div>
-        <div class="card" readonly">
+        <div class="card" readonly>
           <textarea id="response-container" readonly class="w-full p-2" placeholder="Hello! How can I help you with unit testing today?"></textarea>
-        </div>
-      </div>
-      <div id="gear-container" class="hidden">
-        <div id="gear">
-          <img width="50" height="50" src="${gearUri}">
-          <p>Composing...</p>
+          <div id="gear-container" class="hidden">
+            <div id="gear">
+              <img width="20" height="20" src="${gearUri}">
+            </div>
+          </div>
         </div>
       </div>
       <script  nonce="${nonce}" src="${jsVSCodeUri}"></script>
