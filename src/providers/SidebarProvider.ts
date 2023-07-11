@@ -43,12 +43,9 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
             });
 
             if (response.status === 200) {
-              await this._context.secrets.store(
-                'translationApiKey',
-                data.value
-              );
+              await this._context.secrets.store('apiKey', data.value);
               vscode.window.showInformationMessage(
-                'SIM ChatGPT successfully added API key: ' + response.status
+                'SIM ChatGPT successfully added API key: ' + data.value
               );
             } else {
               throw new Error('API request failed');
