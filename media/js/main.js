@@ -34,9 +34,7 @@
         break;
       }
       case 'onLoadApiKey': {
-        if (message.value) {
-          getApiInputField('hidden');
-        }
+        handleInputMessage(message.value);
         break;
       }
       case 'onCommandClicked': {
@@ -59,12 +57,25 @@
     }
   });
 
+  function handleInputMessage(details) {
+    const inputMessage = document.getElementById('message');
+    if (details) {
+      if (details.isLoading) {
+        inputMessage.innerHTML = `Verifying API key...`;
+      } else {
+        inputMessage.innerHTML = `You have already added an API key last ${details.dateAdded}`;
+        getApiInputField('hidden');
+      }
+    } else {
+      inputMessage.innerHTML = `API Key is not added. Obtain one from https://platform.openai.com/account/api-keys`;
+    }
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
     let apiKeyInput = document.getElementById('api-key');
     let apiKey = apiKeyInput.value.trim();
     if (apiKey !== '') {
-      getApiInputField('hidden');
       vscode.postMessage({ type: 'saveApiKey', value: apiKey });
     }
   }
