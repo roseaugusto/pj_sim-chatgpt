@@ -107,7 +107,8 @@
   };
 
   const cancelLoading = document.getElementById('cancel');
-  cancelLoading.onclick = () => {
+  cancelLoading.onclick = (e) => {
+    e.stopPropagation();
     vscode.postMessage({ type: 'cancelQuery', value: null });
   };
 })();
