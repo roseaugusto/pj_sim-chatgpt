@@ -31,6 +31,9 @@
         textarea.value = message.value;
         textarea.style.height = '';
         textarea.style.height = Math.min(textarea.scrollHeight, 500) + 'px';
+
+        const inputQuery = document.getElementById('input-query');
+        localStorage.setItem('selectedData', inputQuery.value);
         break;
       }
       case 'onLoadApiKey': {
@@ -54,6 +57,9 @@
         container.value = message.value;
         container.style.height = '';
         container.style.height = container.scrollHeight + 'px';
+
+        const inputQuery = document.getElementById('response-container');
+        localStorage.setItem('latestData', inputQuery.value);
         break;
       }
     }
@@ -111,4 +117,24 @@
     e.stopPropagation();
     vscode.postMessage({ type: 'cancelQuery', value: null });
   };
+
+  if (localStorage.getItem('latestData')) {
+    const container = document.getElementById('response-container');
+    container.value = localStorage.getItem('latestData');
+    container.style.height = '';
+    container.style.height = container.scrollHeight + 'px';
+    setTimeout(() => {
+      localStorage.removeItem('latestData');
+    }, 1 * 60 * 1000);
+  }
+
+  if (localStorage.getItem('selectedData')) {
+    const textarea = document.getElementById('input-query');
+    textarea.value = localStorage.getItem('selectedData');
+    textarea.style.height = '';
+    textarea.style.height = Math.min(textarea.scrollHeight, 500) + 'px';
+    setTimeout(() => {
+      localStorage.removeItem('selectedData');
+    }, 1 * 60 * 1000);
+  }
 })();
