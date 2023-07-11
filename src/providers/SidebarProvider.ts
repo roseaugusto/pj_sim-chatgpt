@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as openai from 'openai';
+import * as fs from 'fs';
 export class SidebarProvider implements vscode.WebviewViewProvider {
   _view?: vscode.WebviewView;
   _doc?: vscode.TextDocument;
@@ -126,18 +127,28 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     const logoUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, 'media/icons', 'icon.svg')
     );
+    const logoSVG = fs.readFileSync(logoUri.fsPath, 'utf-8');
+
     const cancelUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, 'media/icons', 'cancel.svg')
     );
+    const cancelSVG = fs.readFileSync(cancelUri.fsPath, 'utf-8');
+
     const gearUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, 'media/icons', 'gear.svg')
     );
+    const gearSVG = fs.readFileSync(gearUri.fsPath, 'utf-8');
+
     const userUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, 'media/icons', 'user.svg')
     );
+    const userSVG = fs.readFileSync(userUri.fsPath, 'utf-8');
+
     const trashUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, 'media/icons', 'trash.svg')
     );
+    const trashSVG = fs.readFileSync(trashUri.fsPath, 'utf-8');
+
     const styleResetUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, 'media/css', 'reset.css')
     );
@@ -170,24 +181,24 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       <div class="flex mb-5">
         <textarea id="input-query" readonly placeholder="Highlight code snippet to ask GPT..." class="w-full resize-vertical rounded-md p-2"></textarea>
         <div class="user space-y-2">
-          <img src="${userUri}">
-          <img class="trash" id="clear-input" src="${trashUri}">
+          ${userSVG}
+          <div id="clear-input">${trashSVG}</div>
         </div>
       </div>
       <div id="search-output">
         <div id="search-output-icons">
           <div class="logo">
-            <img src="${logoUri}">
+            ${logoSVG}
           </div>
           <div id="cancel" class="hidden">
-            <img src="${cancelUri}">
+            ${cancelSVG}
           </div>
         </div>
         <div class="card" readonly>
           <textarea id="response-container" readonly class="w-full p-2" placeholder="Hello! How can I help you with unit testing today?"></textarea>
           <div id="gear-container" class="hidden">
             <div id="gear">
-              <img width="20" height="20" src="${gearUri}">
+              ${gearSVG}
             </div>
           </div>
         </div>
