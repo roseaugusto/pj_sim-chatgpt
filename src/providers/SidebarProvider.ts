@@ -1,18 +1,23 @@
 import * as vscode from 'vscode';
 import * as openai from 'openai';
 import * as fs from 'fs';
+import * as moment from 'moment';
+
 export class SidebarProvider implements vscode.WebviewViewProvider {
   _view?: vscode.WebviewView;
   _doc?: vscode.TextDocument;
   _openAI?: openai.OpenAIApi;
   _extensionUri: vscode.Uri;
   _isCancelled: boolean = false;
+
   constructor(private _context: vscode.ExtensionContext) {
+    moment.locale();
     this._extensionUri = _context.extensionUri;
-    this._context.secrets.get('apiKey').then((key) => {
+    this._context.secrets.get('unitTestApiKey').then((key) => {
+      const apiKey = key ? JSON.parse(key as string) : undefined;
       this._openAI = new openai.OpenAIApi(
         new openai.Configuration({
-          apiKey: key,
+          apiKey: apiKey ? apiKey.value : undefined,
         })
       );
     });
@@ -33,7 +38,15 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.type) {
         case 'saveApiKey': {
+          const apiKey = {
+            value: data.value,
+            dateAdded: moment(new Date()).format('llll'),
+          };
           try {
+            this._view?.webview.postMessage({
+              type: 'onLoadApiKey',
+              value: { ...apiKey, isLoading: true },
+            });
             const configuration = new openai.Configuration({
               apiKey: data.value,
             });
@@ -44,7 +57,15 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
             });
 
             if (response.status === 200) {
-              await this._context.secrets.store('apiKey', data.value);
+              this._openAI = openAI;
+              await this._context.secrets.store(
+                'unitTestApiKey',
+                JSON.stringify(apiKey)
+              );
+              this._view?.webview.postMessage({
+                type: 'onLoadApiKey',
+                value: apiKey,
+              });
               vscode.window.showInformationMessage(
                 'SIM ChatGPT successfully added API key: ' + data.value
               );
@@ -57,14 +78,19 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
               error.message ||
               'Unknown error occurred';
             vscode.window.showErrorMessage('SIM ChatGPT: ' + errorMessage);
+            this._view?.webview.postMessage({
+              type: 'onLoadApiKey',
+              value: undefined,
+            });
           }
           break;
         }
         case 'getApiKey': {
-          this._context.secrets.get('apiKey').then((key) => {
+          this._context.secrets.get('unitTestApiKey').then((key) => {
+            const apiKey = key ? JSON.parse(key as string) : undefined;
             this._view?.webview.postMessage({
               type: 'onLoadApiKey',
-              value: key,
+              value: apiKey,
             });
           });
           break;
@@ -176,7 +202,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         <input type="text" id="api-key" class="api-input code" placeholder="ChatGPT API Key"></input>
         <button class="btn-save" type="submit">Save</button>
       </form>
-      <code id="message">Please enter your ChatGPT API Key. Make sure you have enough credits to use ChatGPT API. Your API key will be stored in vscode secret storage.</code>
+      <code id="message">Verifying API Key...</code>
       <hr id="divider"/>
       <div class="flex mb-5">
         <textarea id="input-query" readonly placeholder="Highlight code snippet to ask GPT..." class="w-full resize-vertical rounded-md p-2"></textarea>

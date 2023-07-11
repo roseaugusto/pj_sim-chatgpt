@@ -184,6 +184,7 @@
   "dependencies": {
     "@vscode/test-electron": "^2.3.3",
     "axios": "^1.4.0",
+    "moment": "^2.29.4",
     "openai": "^3.3.0"
   }
 }
