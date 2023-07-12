@@ -11,6 +11,7 @@
     'load',
     () => {
       vscode.postMessage({ type: 'getApiKey', value: null });
+      handleLoading(localStorage.getItem('isLoading') === 'true');
     },
     { capture: true }
   );
@@ -41,6 +42,7 @@
         break;
       }
       case 'onCommandClicked': {
+        localStorage.setItem('isLoading', 'true');
         const textarea = document.getElementById('input-query');
         textarea.value = message.value + textarea.value;
         textarea.style.height = '';
@@ -50,6 +52,7 @@
         break;
       }
       case 'onChatGPTResponse': {
+        localStorage.setItem('isLoading', 'false');
         handleLoading(false);
         const container = document.getElementById('response-container');
         container.value = message.value;
