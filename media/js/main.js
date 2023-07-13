@@ -32,9 +32,6 @@
         textarea.value = message.value;
         textarea.style.height = '';
         textarea.style.height = Math.min(textarea.scrollHeight, 500) + 'px';
-
-        const inputQuery = document.getElementById('input-query');
-        localStorage.setItem('selectedData', inputQuery.value);
         break;
       }
       case 'onLoadApiKey': {
@@ -47,6 +44,8 @@
         textarea.value = message.value + textarea.value;
         textarea.style.height = '';
         textarea.style.height = Math.min(textarea.scrollHeight, 500) + 'px';
+
+        localStorage.setItem('selectedData', textarea.value);
         handleLoading(true);
         vscode.postMessage({ type: 'queryChatGPT', value: textarea.value });
         break;
@@ -54,31 +53,22 @@
       case 'onChatGPTResponse': {
         localStorage.setItem('isLoading', 'false');
         handleLoading(false);
-        // const container = document.getElementById('response-container');
-        // container.value = message.value;
-        // container.style.height = '';
-        // container.style.height = container.scrollHeight + 'px';
-
-        // Retrieve existing array from localStorage
         const existingArrayString = localStorage.getItem('arrayGptOutput');
         const selectedArrayString = localStorage.getItem('selectedArray');
         let existingArray = [];
         let selectedArray = [];
 
-        // Check if the array exists in localStorage
         if (existingArrayString && selectedArray) {
           existingArray = JSON.parse(existingArrayString);
           selectedArray = JSON.parse(selectedArrayString);
         }
 
-        // Add new data to the array
         existingArray.push(message.value);
         selectedArray.push(localStorage.getItem('selectedData'));
-        // Convert the updated array back to a string
+
         const updatedArrayString = JSON.stringify(existingArray);
         const updatedSelectedArrayString = JSON.stringify(selectedArray);
 
-        // Store the updated stringified array in localStorage
         localStorage.setItem('arrayGptOutput', updatedArrayString);
         localStorage.setItem('selectedArray', updatedSelectedArrayString);
         displayRecent();

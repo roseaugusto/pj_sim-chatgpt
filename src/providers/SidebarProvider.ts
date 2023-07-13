@@ -229,8 +229,10 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         </div>
         <div class="flex-column">
         <div id="gear-container" class="hidden">
+        <div class="card">
         <div id="gear">
-          ${gearSVG}
+        ${gearSVG}
+      </div>
         </div>
         </div>
         <div class="dialog-box">
