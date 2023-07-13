@@ -111,18 +111,25 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
             })
             .then((res) => {
               if (!this._isCancelled) {
-                this._view?.webview.postMessage({
-                  type: 'onChatGPTResponse',
-                  value: res.data.choices[0].message?.content,
-                });
                 const editor = vscode.window.activeTextEditor;
                 const selection = editor?.selection;
-                editor?.edit((editBuilder) => {
-                  editBuilder.insert(
-                    selection?.end as vscode.Position,
-                    `\n${res.data.choices[0].message?.content}`
-                  );
-                });
+                editor
+                  ?.edit((editBuilder) => {
+                    editBuilder.insert(
+                      selection?.end as vscode.Position,
+                      `\n${res.data.choices[0].message?.content}`
+                    );
+                  })
+                  .then(() => {
+                    vscode.commands
+                      .executeCommand('sim-chatgpt-sidebar.focus')
+                      .then(() => {
+                        this._view?.webview.postMessage({
+                          type: 'onChatGPTResponse',
+                          value: res.data.choices[0].message?.content,
+                        });
+                      });
+                  });
               }
               this._isCancelled = false;
             })
