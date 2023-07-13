@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as openai from 'openai';
 import * as fs from 'fs';
 import * as moment from 'moment';
+import { showMessageWithTimeout } from '../components/ToastMessage';
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
   _view?: vscode.WebviewView;
@@ -66,7 +67,8 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                 type: 'onLoadApiKey',
                 value: apiKey,
               });
-              vscode.window.showInformationMessage(
+              showMessageWithTimeout(
+                'success',
                 'SIM ChatGPT successfully added API key: ' + data.value
               );
             } else {
@@ -77,7 +79,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
               error.response?.data?.error?.message ||
               error.message ||
               'Unknown error occurred';
-            vscode.window.showErrorMessage('SIM ChatGPT: ' + errorMessage);
+            showMessageWithTimeout('error', errorMessage);
             this._view?.webview.postMessage({
               type: 'onLoadApiKey',
               value: undefined,
@@ -140,9 +142,9 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                   value: error.response.data.error.message,
                 });
               }
-              vscode.window.showErrorMessage(
-                'SIM ChatGPT: ' + error.response.data.error.message ||
-                  error.message
+              showMessageWithTimeout(
+                'error',
+                error.response.data.error.message || error.message
               );
               this._isCancelled = false;
             });
