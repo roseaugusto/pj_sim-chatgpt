@@ -32,6 +32,7 @@
         textarea.value = message.value;
         textarea.style.height = '';
         textarea.style.height = Math.min(textarea.scrollHeight, 500) + 'px';
+        localStorage.setItem('selectedData', textarea.value);
         break;
       }
       case 'onLoadApiKey': {
@@ -141,6 +142,7 @@
   clearConvoInput.onclick = () => {
     localStorage.removeItem('arrayGptOutput');
     localStorage.removeItem('selectedArray');
+    localStorage.removeItem('selectedItem');
     const container = document.querySelector('.dialog-box');
     container.innerHTML = `<div class="card card-indicator" id="card">
     <textarea id="response-container"  class="response-container w-full p-2" placeholder="Hello! How can I help you with unit testing today?"></textarea>
@@ -171,7 +173,7 @@
 
       const clearInput = document.getElementById('input-query');
       clearInput.style.height = '';
-      clearInput.value = '';
+      clearInput.value = localStorage.getItem('selectedData');
       clearInput.ariaPlaceholder = 'Highlight code snippet to ask GPT...';
 
       for (let i = 0; i < data.length; i++) {
