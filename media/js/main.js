@@ -162,6 +162,8 @@
       const data = JSON.parse(localStorage.getItem('arrayGptOutput'));
       const selectedData = JSON.parse(localStorage.getItem('selectedArray'));
 
+      const clearInput = document.getElementById('input-query');
+      clearInput.value = 'Highlight code snippet to ask GPT...';
       const responseContainer = document.getElementById('response-container');
       container.insertBefore(
         responseContainer.parentElement,
