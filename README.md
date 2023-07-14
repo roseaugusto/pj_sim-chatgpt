@@ -41,5 +41,12 @@ Initial release of SIM ChatGPT: Unit Test
 ### 1.0.1
 
 Update list of testing frameworks and resolve API Key navigation
+### 1.0.2
+
+- Stopping loader when there is an error on the API
+- Allow key icon and other icons dynamic of the current color theme of vscode
+- Replaced API Key input caption to actual details
+- Persist inputs and loading when leaving and going back to the extension
+- Add dialog box on GPT response output
 
 **Enjoy!**
