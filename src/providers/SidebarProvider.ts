@@ -229,13 +229,19 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
             ${cancelSVG}
           </div>
         </div>
-        <div class="card" readonly>
-          <textarea id="response-container" readonly class="w-full p-2" placeholder="Hello! How can I help you with unit testing today?"></textarea>
-          <div id="gear-container" class="hidden">
-            <div id="gear">
-              ${gearSVG}
-            </div>
-          </div>
+        <div class="flex-column">
+        <div id="gear-container" class="hidden">
+        <div class="card">
+        <div id="gear">
+        ${gearSVG}
+      </div>
+        </div>
+        </div>
+        <div class="dialog-box">
+        <div class="card card-indicator" id="card">
+        <textarea id="response-container"  class="response-container w-full p-2" placeholder="Hello! How can I help you with unit testing today?"></textarea>
+        </div>
+        </div>
         </div>
       </div>
       <script  nonce="${nonce}" src="${jsVSCodeUri}"></script>

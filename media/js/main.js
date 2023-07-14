@@ -32,9 +32,6 @@
         textarea.value = message.value;
         textarea.style.height = '';
         textarea.style.height = Math.min(textarea.scrollHeight, 500) + 'px';
-
-        const inputQuery = document.getElementById('input-query');
-        localStorage.setItem('selectedData', inputQuery.value);
         break;
       }
       case 'onLoadApiKey': {
@@ -47,6 +44,8 @@
         textarea.value = message.value + textarea.value;
         textarea.style.height = '';
         textarea.style.height = Math.min(textarea.scrollHeight, 500) + 'px';
+
+        localStorage.setItem('selectedData', textarea.value);
         handleLoading(true);
         vscode.postMessage({ type: 'queryChatGPT', value: textarea.value });
         break;
@@ -54,13 +53,25 @@
       case 'onChatGPTResponse': {
         localStorage.setItem('isLoading', 'false');
         handleLoading(false);
-        const container = document.getElementById('response-container');
-        container.value = message.value;
-        container.style.height = '';
-        container.style.height = container.scrollHeight + 'px';
+        const existingArrayString = localStorage.getItem('arrayGptOutput');
+        const selectedArrayString = localStorage.getItem('selectedArray');
+        let existingArray = [];
+        let selectedArray = [];
 
-        const inputQuery = document.getElementById('response-container');
-        localStorage.setItem('latestData', inputQuery.value);
+        if (existingArrayString && selectedArray) {
+          existingArray = JSON.parse(existingArrayString);
+          selectedArray = JSON.parse(selectedArrayString);
+        }
+
+        existingArray.push(message.value);
+        selectedArray.push(localStorage.getItem('selectedData'));
+
+        const updatedArrayString = JSON.stringify(existingArray);
+        const updatedSelectedArrayString = JSON.stringify(selectedArray);
+
+        localStorage.setItem('arrayGptOutput', updatedArrayString);
+        localStorage.setItem('selectedArray', updatedSelectedArrayString);
+        displayRecent();
         break;
       }
     }
@@ -132,23 +143,70 @@
     vscode.postMessage({ type: 'cancelQuery', value: null });
   };
 
-  if (localStorage.getItem('latestData')) {
-    const container = document.getElementById('response-container');
-    container.value = localStorage.getItem('latestData');
-    container.style.height = '';
-    container.style.height = container.scrollHeight + 'px';
-    setTimeout(() => {
-      localStorage.removeItem('latestData');
-    }, 1 * 60 * 1000);
-  }
-
   if (localStorage.getItem('selectedData')) {
     const textarea = document.getElementById('input-query');
     textarea.value = localStorage.getItem('selectedData');
     textarea.style.height = '';
     textarea.style.height = Math.min(textarea.scrollHeight, 500) + 'px';
+    displayRecent();
     setTimeout(() => {
       localStorage.removeItem('selectedData');
-    }, 1 * 60 * 1000);
+      localStorage.removeItem('arrayGptOutput');
+      localStorage.removeItem('selectedArray');
+    }, 5 * 60 * 1000);
+  }
+
+  function displayRecent() {
+    if (localStorage.getItem('arrayGptOutput')) {
+      const container = document.querySelector('.dialog-box');
+      const data = JSON.parse(localStorage.getItem('arrayGptOutput'));
+      const selectedData = JSON.parse(localStorage.getItem('selectedArray'));
+
+      const clearInput = document.getElementById('input-query');
+      clearInput.value = 'Highlight code snippet to ask GPT...';
+      const responseContainer = document.getElementById('response-container');
+      container.insertBefore(
+        responseContainer.parentElement,
+        container.firstChild
+      );
+
+      for (let i = 0; i < data.length; i++) {
+        const existingData = Array.from(
+          container.querySelectorAll('textarea')
+        ).map((textarea) => textarea.value);
+        if (!existingData.includes(data[i])) {
+          const card = document.createElement('div');
+          card.className = 'card border-right';
+
+          const textareaClone = document.createElement('textarea');
+          textareaClone.value = data[i];
+          textareaClone.readOnly = true;
+          textareaClone.style.height = 'auto';
+          textareaClone.className = 'response-container w-full p-2';
+
+          card.appendChild(textareaClone);
+          container.insertBefore(card, container.firstChild);
+          textareaClone.style.height =
+            Math.min(textareaClone.scrollHeight, 500) + 'px';
+
+          const selectedCard = document.createElement('div');
+          selectedCard.className = 'card border-left';
+
+          const selectedClone = document.createElement('textarea');
+          selectedClone.value = selectedData[i];
+          selectedClone.readOnly = true;
+          selectedClone.style.height = 'auto';
+          selectedClone.className = 'response-container w-full p-2';
+
+          selectedCard.appendChild(selectedClone);
+          container.insertBefore(selectedCard, container.firstChild);
+          selectedClone.style.height =
+            Math.min(selectedClone.scrollHeight, 500) + 'px';
+        }
+      }
+
+      const textarea = document.querySelector('.card-indicator');
+      textarea.classList.add('hidden');
+    }
   }
 })();
