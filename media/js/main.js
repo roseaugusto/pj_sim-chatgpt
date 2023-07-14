@@ -165,13 +165,14 @@
     if (localStorage.getItem('arrayGptOutput')) {
       const textarea = document.querySelector('.card-indicator');
       textarea.classList.add('hidden');
-
       const container = document.querySelector('.dialog-box');
       const data = JSON.parse(localStorage.getItem('arrayGptOutput'));
       const selectedData = JSON.parse(localStorage.getItem('selectedArray'));
 
       const clearInput = document.getElementById('input-query');
-      clearInput.value = 'Highlight code snippet to ask GPT...';
+      clearInput.style.height = '';
+      clearInput.value = '';
+      clearInput.ariaPlaceholder = 'Highlight code snippet to ask GPT...';
 
       for (let i = 0; i < data.length; i++) {
         const existingData = Array.from(
