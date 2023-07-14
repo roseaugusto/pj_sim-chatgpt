@@ -137,6 +137,16 @@
     textarea.style.height = '';
   };
 
+  const clearConvoInput = document.getElementById('clear-convo');
+  clearConvoInput.onclick = () => {
+    localStorage.removeItem('arrayGptOutput');
+    localStorage.removeItem('selectedArray');
+    const container = document.querySelector('.dialog-box');
+    container.innerHTML = `<div class="card card-indicator" id="card">
+    <textarea id="response-container"  class="response-container w-full p-2" placeholder="Hello! How can I help you with unit testing today?"></textarea>
+    </div>`;
+  };
+
   const cancelLoading = document.getElementById('cancel');
   cancelLoading.onclick = (e) => {
     e.stopPropagation();
@@ -149,26 +159,19 @@
     textarea.style.height = '';
     textarea.style.height = Math.min(textarea.scrollHeight, 500) + 'px';
     displayRecent();
-    setTimeout(() => {
-      localStorage.removeItem('selectedData');
-      localStorage.removeItem('arrayGptOutput');
-      localStorage.removeItem('selectedArray');
-    }, 5 * 60 * 1000);
   }
 
   function displayRecent() {
     if (localStorage.getItem('arrayGptOutput')) {
+      const textarea = document.querySelector('.card-indicator');
+      textarea.classList.add('hidden');
+
       const container = document.querySelector('.dialog-box');
       const data = JSON.parse(localStorage.getItem('arrayGptOutput'));
       const selectedData = JSON.parse(localStorage.getItem('selectedArray'));
 
       const clearInput = document.getElementById('input-query');
       clearInput.value = 'Highlight code snippet to ask GPT...';
-      const responseContainer = document.getElementById('response-container');
-      container.insertBefore(
-        responseContainer.parentElement,
-        container.firstChild
-      );
 
       for (let i = 0; i < data.length; i++) {
         const existingData = Array.from(
@@ -204,9 +207,6 @@
             Math.min(selectedClone.scrollHeight, 500) + 'px';
         }
       }
-
-      const textarea = document.querySelector('.card-indicator');
-      textarea.classList.add('hidden');
     }
   }
 })();

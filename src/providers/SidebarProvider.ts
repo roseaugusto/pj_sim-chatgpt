@@ -225,6 +225,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           <div class="logo">
             ${logoSVG}
           </div>
+          <div id="clear-convo">${trashSVG}</div>
           <div id="cancel" class="hidden">
             ${cancelSVG}
           </div>

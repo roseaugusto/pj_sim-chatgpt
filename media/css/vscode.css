@@ -238,6 +238,10 @@ hr {
   cursor: pointer;
 }
 
+#clear-convo {
+  cursor: pointer;
+}
+
 #gear > svg {
   width: 8%;
   height: 8%;
