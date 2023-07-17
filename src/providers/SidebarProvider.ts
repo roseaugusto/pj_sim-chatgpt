@@ -101,7 +101,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           this._isCancelled = true;
           this._view?.webview.postMessage({
             type: 'onChatGPTResponse',
-            value: '',
+            value: 'cancelled',
           });
           break;
         }
@@ -225,6 +225,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           <div class="logo">
             ${logoSVG}
           </div>
+          <div id="clear-convo">${trashSVG}</div>
           <div id="cancel" class="hidden">
             ${cancelSVG}
           </div>

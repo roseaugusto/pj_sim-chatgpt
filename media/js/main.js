@@ -32,6 +32,7 @@
         textarea.value = message.value;
         textarea.style.height = '';
         textarea.style.height = Math.min(textarea.scrollHeight, 500) + 'px';
+        localStorage.setItem('selectedData', textarea.value);
         break;
       }
       case 'onLoadApiKey': {
@@ -63,8 +64,15 @@
           selectedArray = JSON.parse(selectedArrayString);
         }
 
-        existingArray.push(message.value);
-        selectedArray.push(localStorage.getItem('selectedData'));
+        if (message.value !== 'cancelled') {
+          existingArray.push(message.value);
+          selectedArray.push(localStorage.getItem('selectedData'));
+          const clearInput = document.getElementById('input-query');
+          clearInput.style.height = '';
+          clearInput.value = '';
+          localStorage.setItem('selectedData', clearInput.value);
+          clearInput.ariaPlaceholder = 'Highlight code snippet to ask GPT...';
+        }
 
         const updatedArrayString = JSON.stringify(existingArray);
         const updatedSelectedArrayString = JSON.stringify(selectedArray);
@@ -133,8 +141,21 @@
   const clearInput = document.getElementById('clear-input');
   clearInput.onclick = () => {
     const textarea = document.getElementById('input-query');
+
     textarea.value = '';
+    localStorage.setItem('selectedData', textarea.value);
     textarea.style.height = '';
+  };
+
+  const clearConvoInput = document.getElementById('clear-convo');
+  clearConvoInput.onclick = () => {
+    localStorage.removeItem('arrayGptOutput');
+    localStorage.removeItem('selectedArray');
+    localStorage.removeItem('selectedItem');
+    const container = document.querySelector('.dialog-box');
+    container.innerHTML = `<div class="card card-indicator" id="card">
+    <textarea id="response-container"  class="response-container w-full p-2" placeholder="Hello! How can I help you with unit testing today?"></textarea>
+    </div>`;
   };
 
   const cancelLoading = document.getElementById('cancel');
@@ -148,65 +169,62 @@
     textarea.value = localStorage.getItem('selectedData');
     textarea.style.height = '';
     textarea.style.height = Math.min(textarea.scrollHeight, 500) + 'px';
+  }
+
+  if (localStorage.getItem('selectedArray')) {
+    const textarea = document.getElementById('input-query');
+    textarea.style.height = '';
+    textarea.style.height = Math.min(textarea.scrollHeight, 500) + 'px';
     displayRecent();
-    setTimeout(() => {
-      localStorage.removeItem('selectedData');
-      localStorage.removeItem('arrayGptOutput');
-      localStorage.removeItem('selectedArray');
-    }, 5 * 60 * 1000);
   }
 
   function displayRecent() {
     if (localStorage.getItem('arrayGptOutput')) {
+      const textarea = document.querySelector('.card-indicator');
+      textarea.classList.add('hidden');
       const container = document.querySelector('.dialog-box');
       const data = JSON.parse(localStorage.getItem('arrayGptOutput'));
       const selectedData = JSON.parse(localStorage.getItem('selectedArray'));
 
-      const clearInput = document.getElementById('input-query');
-      clearInput.value = 'Highlight code snippet to ask GPT...';
-      const responseContainer = document.getElementById('response-container');
-      container.insertBefore(
-        responseContainer.parentElement,
-        container.firstChild
-      );
+      if (data.length) {
+        for (let i = 0; i < data.length; i++) {
+          const existingData = Array.from(
+            container.querySelectorAll('textarea')
+          ).map((textarea) => textarea.value);
+          if (!existingData.includes(data[i])) {
+            const card = document.createElement('div');
+            card.className = 'card border-right';
 
-      for (let i = 0; i < data.length; i++) {
-        const existingData = Array.from(
-          container.querySelectorAll('textarea')
-        ).map((textarea) => textarea.value);
-        if (!existingData.includes(data[i])) {
-          const card = document.createElement('div');
-          card.className = 'card border-right';
+            const textareaClone = document.createElement('textarea');
+            textareaClone.value = data[i];
+            textareaClone.readOnly = true;
+            textareaClone.style.height = 'auto';
+            textareaClone.className = 'response-container w-full p-2';
 
-          const textareaClone = document.createElement('textarea');
-          textareaClone.value = data[i];
-          textareaClone.readOnly = true;
-          textareaClone.style.height = 'auto';
-          textareaClone.className = 'response-container w-full p-2';
+            card.appendChild(textareaClone);
+            container.insertBefore(card, container.firstChild);
+            textareaClone.style.height =
+              Math.min(textareaClone.scrollHeight, 500) + 'px';
 
-          card.appendChild(textareaClone);
-          container.insertBefore(card, container.firstChild);
-          textareaClone.style.height =
-            Math.min(textareaClone.scrollHeight, 500) + 'px';
+            const selectedCard = document.createElement('div');
+            selectedCard.className = 'card border-left';
 
-          const selectedCard = document.createElement('div');
-          selectedCard.className = 'card border-left';
+            const selectedClone = document.createElement('textarea');
+            selectedClone.value = selectedData[i];
+            selectedClone.readOnly = true;
+            selectedClone.style.height = 'auto';
+            selectedClone.className = 'response-container w-full p-2';
 
-          const selectedClone = document.createElement('textarea');
-          selectedClone.value = selectedData[i];
-          selectedClone.readOnly = true;
-          selectedClone.style.height = 'auto';
-          selectedClone.className = 'response-container w-full p-2';
-
-          selectedCard.appendChild(selectedClone);
-          container.insertBefore(selectedCard, container.firstChild);
-          selectedClone.style.height =
-            Math.min(selectedClone.scrollHeight, 500) + 'px';
+            selectedCard.appendChild(selectedClone);
+            container.insertBefore(selectedCard, container.firstChild);
+            selectedClone.style.height =
+              Math.min(selectedClone.scrollHeight, 500) + 'px';
+          }
         }
+      } else {
+        const textarea = document.querySelector('.card-indicator');
+        textarea.classList.remove('hidden');
       }
-
-      const textarea = document.querySelector('.card-indicator');
-      textarea.classList.add('hidden');
     }
   }
 })();

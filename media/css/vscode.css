@@ -238,6 +238,15 @@ hr {
   cursor: pointer;
 }
 
+#clear-convo {
+  cursor: pointer;
+}
+
+#clear-convo > svg {
+  stroke: var(--vscode-foreground);
+  fill: none;
+}
+
 #gear > svg {
   width: 8%;
   height: 8%;
