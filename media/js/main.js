@@ -134,7 +134,9 @@
   const clearInput = document.getElementById('clear-input');
   clearInput.onclick = () => {
     const textarea = document.getElementById('input-query');
+
     textarea.value = '';
+    localStorage.setItem('selectedData', textarea.value);
     textarea.style.height = '';
   };
 
@@ -160,6 +162,12 @@
     textarea.value = localStorage.getItem('selectedData');
     textarea.style.height = '';
     textarea.style.height = Math.min(textarea.scrollHeight, 500) + 'px';
+  }
+
+  if (localStorage.getItem('selectedArray')) {
+    const textarea = document.getElementById('input-query');
+    textarea.style.height = '';
+    textarea.style.height = Math.min(textarea.scrollHeight, 500) + 'px';
     displayRecent();
   }
 
@@ -170,11 +178,6 @@
       const container = document.querySelector('.dialog-box');
       const data = JSON.parse(localStorage.getItem('arrayGptOutput'));
       const selectedData = JSON.parse(localStorage.getItem('selectedArray'));
-
-      const clearInput = document.getElementById('input-query');
-      clearInput.style.height = '';
-      clearInput.value = localStorage.getItem('selectedData');
-      clearInput.ariaPlaceholder = 'Highlight code snippet to ask GPT...';
 
       for (let i = 0; i < data.length; i++) {
         const existingData = Array.from(
