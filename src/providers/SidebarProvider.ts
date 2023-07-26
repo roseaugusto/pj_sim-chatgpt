@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as openai from 'openai';
 import * as fs from 'fs';
 import * as moment from 'moment';
+import * as path from 'path';
 import { showMessageWithTimeout } from '../components/ToastMessage';
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
@@ -122,14 +123,36 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                       `\n${res.data.choices[0].message?.content}`
                     );
                   })
-                  .then(() => {
+                  .then(async () => {
                     vscode.commands
                       .executeCommand('sim-chatgpt-sidebar.focus')
-                      .then(() => {
+                      .then(async () => {
                         this._view?.webview.postMessage({
                           type: 'onChatGPTResponse',
                           value: res.data.choices[0].message?.content,
                         });
+
+                        const workspaceFolders =
+                          vscode.workspace.workspaceFolders;
+                        if (
+                          !workspaceFolders ||
+                          workspaceFolders.length === 0
+                        ) {
+                          throw new Error('No workspace folder found.');
+                        }
+
+                        const workspacePath = workspaceFolders[0].uri.fsPath;
+                        const filename = 'new_file.txt';
+
+                        const filePath = path.join(workspacePath, filename);
+                        const content =
+                          res.data.choices[0].message?.content ?? '';
+
+                        fs.writeFileSync(filePath, content);
+
+                        const document =
+                          await vscode.workspace.openTextDocument(filePath);
+                        await vscode.window.showTextDocument(document);
                       });
                   });
               }
