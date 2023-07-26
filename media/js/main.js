@@ -12,6 +12,20 @@
     () => {
       vscode.postMessage({ type: 'getApiKey', value: null });
       handleLoading(localStorage.getItem('isLoading') === 'true');
+
+      if (localStorage.getItem('selectedData')) {
+        const textarea = document.getElementById('input-query');
+        textarea.value = localStorage.getItem('selectedData');
+        textarea.style.height = '';
+        textarea.style.height = Math.min(textarea.scrollHeight, 500) + 'px';
+      }
+
+      if (localStorage.getItem('selectedArray')) {
+        const textarea = document.getElementById('input-query');
+        textarea.style.height = '';
+        textarea.style.height = Math.min(textarea.scrollHeight, 500) + 'px';
+        displayRecent();
+      }
     },
     { capture: true }
   );
@@ -175,20 +189,6 @@
     e.stopPropagation();
     vscode.postMessage({ type: 'cancelQuery', value: null });
   };
-
-  if (localStorage.getItem('selectedData')) {
-    const textarea = document.getElementById('input-query');
-    textarea.value = localStorage.getItem('selectedData');
-    textarea.style.height = '';
-    textarea.style.height = Math.min(textarea.scrollHeight, 500) + 'px';
-  }
-
-  if (localStorage.getItem('selectedArray')) {
-    const textarea = document.getElementById('input-query');
-    textarea.style.height = '';
-    textarea.style.height = Math.min(textarea.scrollHeight, 500) + 'px';
-    displayRecent();
-  }
 
   function displayRecent() {
     if (localStorage.getItem('arrayGptOutput')) {
