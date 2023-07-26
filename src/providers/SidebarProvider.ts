@@ -117,16 +117,33 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                 vscode.commands
                   .executeCommand('sim-chatgpt-sidebar.focus')
                   .then(async () => {
+                    const textareaOpen =
+                      "<textarea readonly id='response-container' class='response-container w-full'>";
+                    const textareaClose = '</textarea>';
+                    const regex = new RegExp('```+[a-zA-Z]+([^\\s]*)', 'g');
+                    const newLineRegex = new RegExp('\n\n', 'g');
+                    const closingTextareaRegex = new RegExp('```', 'g');
+                    let replacedTextArea = res.data.choices[0].message?.content;
+                    if (replacedTextArea?.includes('```')) {
+                      replacedTextArea = res.data.choices[0].message?.content
+                        ?.replace(regex, textareaOpen)
+                        .replace(closingTextareaRegex, textareaClose)
+                        .replace(newLineRegex, '\n');
+                    } else {
+                      replacedTextArea =
+                        textareaOpen + replacedTextArea + textareaClose;
+                    }
                     this._view?.webview
                       .postMessage({
                         type: 'onChatGPTResponse',
-                        value: res.data.choices[0].message?.content,
+                        value: replacedTextArea,
                       })
                       .then(async () => {
                         const fs = require('fs').promises;
                         const filePath = data.pathLocation;
-                        const content =
-                          res.data.choices[0].message?.content || '';
+                        const content = res.data.choices[0].message?.content
+                          ?.replace(regex, '')
+                          .replace(closingTextareaRegex, '');
 
                         const directory = path.dirname(filePath);
                         fs.mkdir(directory, { recursive: true }); // Create the directory recursively if it doesn't exist
@@ -145,12 +162,12 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
               if (!this._isCancelled) {
                 this._view?.webview.postMessage({
                   type: 'onChatGPTResponse',
-                  value: error.response.data.error.message,
+                  value: error.response?.data?.error?.message || error?.message,
                 });
               }
               showMessageWithTimeout(
                 'error',
-                error.response.data.error.message || error.message
+                error.response?.data?.error?.message || error?.message
               );
               this._isCancelled = false;
             });
@@ -203,57 +220,69 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     // Use a nonce to only allow a specific script to be run.
     const nonce = getNonce();
 
-    return `<!DOCTYPE html>
-			<html lang="en">
-			<head>
-				<meta charset="UTF-8">
-        <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; font-src 'self'; img-src 'self' data: 'data:image/svg+xml' https:; style-src ${webview.cspSource};   script-src ${webview.cspSource};">
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<link href="${styleResetUri}" rel="stylesheet">
-				<link href="${styleVSCodeUri}" rel="stylesheet">
-			</head>
+    return `
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta
+          http-equiv="Content-Security-Policy"
+          content="default-src 'none'; connect-src 'self'; font-src 'self'; img-src 'self' data: 'data:image/svg+xml' https:; style-src ${webview.cspSource};   script-src ${webview.cspSource};"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="${styleResetUri}" rel="stylesheet" />
+        <link href="${styleVSCodeUri}" rel="stylesheet" />
+      </head>
       <body>
-      <form class="flex" id="myForm">
-        <input type="text" id="api-key" class="api-input code" placeholder="ChatGPT API Key"></input>
-        <button class="btn-save" type="submit">Save</button>
-      </form>
-      <code id="message">Verifying API Key...</code>
-      <hr id="divider"/>
-      <div class="flex mb-5">
-        <textarea id="input-query" readonly placeholder="Highlight code snippet to ask GPT..." class="w-full resize-vertical rounded-md p-2"></textarea>
-        <div class="user space-y-2">
-          ${userSVG}
-          <div id="clear-input">${trashSVG}</div>
-        </div>
-      </div>
-      <div id="search-output">
-        <div id="search-output-icons">
-          <div class="logo">
-            ${logoSVG}
+        <form class="flex" id="myForm">
+          <input
+            type="text"
+            id="api-key"
+            class="api-input code"
+            placeholder="ChatGPT API Key"
+          />
+          <button class="btn-save" type="submit">Save</button>
+        </form>
+        <code id="message">Verifying API Key...</code>
+        <hr id="divider" />
+        <div class="flex mb-5">
+          <textarea
+            id="input-query"
+            readonly
+            placeholder="Highlight code snippet to ask GPT..."
+            class="w-full resize-vertical rounded-md p-2"
+          ></textarea>
+          <div class="user space-y-2">
+            ${userSVG}
+            <div id="clear-input">${trashSVG}</div>
           </div>
-          <div id="clear-convo">${trashSVG}</div>
-          <div id="cancel" class="hidden">
-            ${cancelSVG}
+        </div>
+        <div id="search-output">
+          <div id="search-output-icons">
+            <div class="logo">${logoSVG}</div>
+            <div id="clear-convo">${trashSVG}</div>
+            <div id="cancel" class="hidden">${cancelSVG}</div>
+          </div>
+          <div class="flex-column">
+            <div id="gear-container" class="hidden">
+              <div class="card">
+                <div id="gear">${gearSVG}</div>
+              </div>
+            </div>
+            <div class="dialog-box" id="dialog-box">
+              <div class="card card-indicator card-container" id="card">
+                <textarea
+                  id="response-container"
+                  class="response-container w-full"
+                  placeholder="Hello! Do you have any programming language you would like me to translate?"
+                ></textarea>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="flex-column">
-        <div id="gear-container" class="hidden">
-        <div class="card">
-        <div id="gear">
-        ${gearSVG}
-      </div>
-        </div>
-        </div>
-        <div class="dialog-box">
-        <div class="card card-indicator" id="card">
-        <textarea id="response-container"  class="response-container w-full p-2" placeholder="Hello! How can I help you with unit testing today?"></textarea>
-        </div>
-        </div>
-        </div>
-      </div>
-      <script  nonce="${nonce}" src="${jsVSCodeUri}"></script>
-	    </body>
-	</html>`;
+        <script nonce="${nonce}" src="${jsVSCodeUri}"></script>
+      </body>
+    </html>`;
   }
 }
 

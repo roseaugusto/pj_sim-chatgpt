@@ -94,16 +94,19 @@ input:not([type='checkbox']),
 .card {
   border-radius: 8px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   width: 100%;
   border: none;
   resize: none;
   overflow: hidden;
   font-family: var(--vscode-font-family);
-  color: #ccc;
+  color: var(--vscode-foreground);
   outline-color: var(--vscode-input-border);
   background-color: var(--vscode-input-background);
   border: 1px solid var(--vscode-input-placeholderForeground);
+  align-items: baseline;
+  padding: 6px;
+  white-space: pre-wrap;
 }
 
 #input-query {
@@ -183,12 +186,13 @@ hr {
   font-family: var(--vscode-editor-font-family);
   font-size: small;
   background-color: var(--vscode-input-background);
-  color: var(--vscode-foreground);
+  color: var(--vscode-textLink-activeForeground);
   border: none;
   outline: none;
   resize: none;
   border-radius: 5px;
-  padding: 10px;
+  min-height: 50px;
+  overflow: hidden;
 }
 
 #gear-container {
@@ -271,4 +275,8 @@ hr {
   width: 100%;
   display: flex;
   flex-direction: column;
+}
+
+.input-response-container {
+  color: var(--vscode-foreground);
 }
