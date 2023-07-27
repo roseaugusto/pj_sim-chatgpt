@@ -11,8 +11,19 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const runUnitTestCommand = async (type: string) => {
     await vscode.commands.executeCommand('sim-chatgpt-sidebar.focus');
-    setTimeout(() => {
+
+    setTimeout(async () => {
       sidebarProvider._view?.show();
+
+      // Utilize this `unitTestPathname` variable to create the file alongside the path to the test folder
+      const unitTestPathname = await vscode.window.showInputBox({
+        placeHolder: 'Search query',
+        prompt:
+          'Input filename with full path to your test folder (e.g. c:\\<path-to-project>\\src\\tests)',
+        value: vscode.workspace.workspaceFolders?.[0].uri.fsPath as string,
+        ignoreFocusOut: true,
+      });
+
       const editor = vscode.window.activeTextEditor;
       const selection = editor?.selection;
       const highlightedText = editor?.document.getText(selection);
