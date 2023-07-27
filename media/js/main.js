@@ -42,13 +42,16 @@
       case 'onCommandClicked': {
         localStorage.setItem('isLoading', 'true');
         const textarea = document.getElementById('input-query');
-        textarea.value = message.value + textarea.value;
+        textarea.value = message.value.query + textarea.value;
         textarea.style.height = '';
         textarea.style.height = Math.min(textarea.scrollHeight, 500) + 'px';
-
         localStorage.setItem('selectedData', textarea.value);
         handleLoading(true);
-        vscode.postMessage({ type: 'queryChatGPT', value: textarea.value });
+        vscode.postMessage({
+          type: 'queryChatGPT',
+          value: textarea.value,
+          pathLocation: message.value.unitTestPathname,
+        });
         break;
       }
       case 'onChatGPTResponse': {

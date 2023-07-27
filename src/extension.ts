@@ -34,7 +34,7 @@ export async function activate(context: vscode.ExtensionContext) {
       let query = `Create a unit test using ${type}:\n`;
       sidebarProvider._view?.webview.postMessage({
         type: 'onCommandClicked',
-        value: query,
+        value: { query, unitTestPathname },
       });
     }, 100);
   };
