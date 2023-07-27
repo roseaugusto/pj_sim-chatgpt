@@ -55,9 +55,9 @@
       }
       case 'onCommandClicked': {
         localStorage.setItem('isLoading', 'true');
-        const instructionPrompt = `\nStrictly enclose the result of code translation like the code block below:\n
+        const instructionPrompt = `\nStrictly enclose the result of unit test like the code block below:\n
         \`\`\`suggestion\n
-          // Translated code\n
+          // Unit Test Code
         \`\`\``;
         const textarea = document.getElementById('input-query');
         textarea.value = message.value.query + textarea.value;
