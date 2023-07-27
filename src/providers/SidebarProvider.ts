@@ -127,32 +127,26 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                     vscode.commands
                       .executeCommand('sim-chatgpt-sidebar.focus')
                       .then(async () => {
-                        this._view?.webview.postMessage({
-                          type: 'onChatGPTResponse',
-                          value: res.data.choices[0].message?.content,
-                        });
+                        this._view?.webview
+                          .postMessage({
+                            type: 'onChatGPTResponse',
+                            value: res.data.choices[0].message?.content,
+                          })
+                          .then(async () => {
+                            const fs = require('fs').promises;
+                            const filePath = data.pathLocation;
+                            const content =
+                              res.data.choices[0].message?.content || '';
 
-                        const workspaceFolders =
-                          vscode.workspace.workspaceFolders;
-                        if (
-                          !workspaceFolders ||
-                          workspaceFolders.length === 0
-                        ) {
-                          throw new Error('No workspace folder found.');
-                        }
+                            const directory = path.dirname(filePath);
+                            fs.mkdir(directory, { recursive: true }); // Create the directory recursively if it doesn't exist
 
-                        const workspacePath = workspaceFolders[0].uri.fsPath;
-                        const filename = 'new_file.txt';
+                            await fs.writeFile(filePath, content);
 
-                        const filePath = path.join(workspacePath, filename);
-                        const content =
-                          res.data.choices[0].message?.content ?? '';
-
-                        fs.writeFileSync(filePath, content);
-
-                        const document =
-                          await vscode.workspace.openTextDocument(filePath);
-                        await vscode.window.showTextDocument(document);
+                            const document =
+                              await vscode.workspace.openTextDocument(filePath);
+                            await vscode.window.showTextDocument(document);
+                          });
                       });
                   });
               }
