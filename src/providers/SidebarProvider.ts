@@ -114,39 +114,28 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
             })
             .then((res) => {
               if (!this._isCancelled) {
-                const editor = vscode.window.activeTextEditor;
-                const selection = editor?.selection;
-                editor
-                  ?.edit((editBuilder) => {
-                    editBuilder.insert(
-                      selection?.end as vscode.Position,
-                      `\n${res.data.choices[0].message?.content}`
-                    );
-                  })
+                vscode.commands
+                  .executeCommand('sim-chatgpt-sidebar.focus')
                   .then(async () => {
-                    vscode.commands
-                      .executeCommand('sim-chatgpt-sidebar.focus')
+                    this._view?.webview
+                      .postMessage({
+                        type: 'onChatGPTResponse',
+                        value: res.data.choices[0].message?.content,
+                      })
                       .then(async () => {
-                        this._view?.webview
-                          .postMessage({
-                            type: 'onChatGPTResponse',
-                            value: res.data.choices[0].message?.content,
-                          })
-                          .then(async () => {
-                            const fs = require('fs').promises;
-                            const filePath = data.pathLocation;
-                            const content =
-                              res.data.choices[0].message?.content || '';
+                        const fs = require('fs').promises;
+                        const filePath = data.pathLocation;
+                        const content =
+                          res.data.choices[0].message?.content || '';
 
-                            const directory = path.dirname(filePath);
-                            fs.mkdir(directory, { recursive: true }); // Create the directory recursively if it doesn't exist
+                        const directory = path.dirname(filePath);
+                        fs.mkdir(directory, { recursive: true }); // Create the directory recursively if it doesn't exist
 
-                            await fs.writeFile(filePath, content);
+                        await fs.writeFile(filePath, content);
 
-                            const document =
-                              await vscode.workspace.openTextDocument(filePath);
-                            await vscode.window.showTextDocument(document);
-                          });
+                        const document =
+                          await vscode.workspace.openTextDocument(filePath);
+                        await vscode.window.showTextDocument(document);
                       });
                   });
               }
