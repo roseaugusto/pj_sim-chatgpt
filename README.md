@@ -48,5 +48,12 @@ Update list of testing frameworks and resolve API Key navigation
 - Replaced API Key input caption to actual details
 - Persist inputs and loading when leaving and going back to the extension
 - Add dialog box on GPT response output
+### 1.0.3
+
+- Format response with codeblocks
+- Generate separate file for each unit test result
+### 1.0.4
+
+- Add error handling on pathname input field
 
 **Enjoy!**
