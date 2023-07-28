@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { SidebarProvider } from './providers/SidebarProvider';
+import { showMessageWithTimeout } from './components/ToastMessage';
 
 export async function activate(context: vscode.ExtensionContext) {
   const sidebarProvider = new SidebarProvider(context);
@@ -14,15 +15,21 @@ export async function activate(context: vscode.ExtensionContext) {
 
     setTimeout(async () => {
       sidebarProvider._view?.show();
+      let unitTestPathname: string | undefined = '';
+      const regex = /\.(js|ts|php|rb|py|tsx|jsx)$/i;
 
-      // Utilize this `unitTestPathname` variable to create the file alongside the path to the test folder
-      const unitTestPathname = await vscode.window.showInputBox({
-        placeHolder: 'Search query',
-        prompt:
-          'Input filename with full path to your test folder (e.g. c:\\<path-to-project>\\src\\tests)',
-        value: vscode.workspace.workspaceFolders?.[0].uri.fsPath as string,
-        ignoreFocusOut: true,
-      });
+      do {
+        unitTestPathname = await vscode.window.showInputBox({
+          placeHolder: 'Search query',
+          prompt:
+            'Input filename with full path to your test folder (e.g. c:\\<path-to-project>\\src\\tests)',
+          value: vscode.workspace.workspaceFolders?.[0].uri.fsPath as string,
+          ignoreFocusOut: true,
+        });
+        if (!regex.test(unitTestPathname as string)) {
+          showMessageWithTimeout('error', 'The provided pathname is not valid');
+        }
+      } while (!regex.test(unitTestPathname as string));
 
       const editor = vscode.window.activeTextEditor;
       const selection = editor?.selection;
