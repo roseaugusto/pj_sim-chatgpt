@@ -273,8 +273,9 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
               <div class="card card-indicator card-container" id="card">
                 <textarea
                   id="response-container"
+                  readonly
                   class="response-container w-full"
-                  placeholder="Hello! Do you have any programming language you would like me to translate?"
+                  placeholder="Hello! How can I help you with unit testing today?"
                 ></textarea>
               </div>
             </div>

@@ -20,16 +20,21 @@ export async function activate(context: vscode.ExtensionContext) {
 
       do {
         unitTestPathname = await vscode.window.showInputBox({
-          placeHolder: 'Search query',
           prompt:
-            'Input filename with full path to your test folder (e.g. c:\\<path-to-project>\\src\\tests)',
+            'OPTIONAL: Input pathname to your test folder along with the test filename to generate test (e.g. c:\\<path-to-project>\\src\\tests\\sample.js)',
           value: vscode.workspace.workspaceFolders?.[0].uri.fsPath as string,
           ignoreFocusOut: true,
         });
-        if (!regex.test(unitTestPathname as string)) {
+        if (
+          unitTestPathname !== undefined &&
+          !regex.test(unitTestPathname as string)
+        ) {
           showMessageWithTimeout('error', 'The provided pathname is not valid');
         }
-      } while (!regex.test(unitTestPathname as string));
+      } while (
+        unitTestPathname !== undefined &&
+        !regex.test(unitTestPathname as string)
+      );
 
       const editor = vscode.window.activeTextEditor;
       const selection = editor?.selection;
